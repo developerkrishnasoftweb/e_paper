@@ -1,5 +1,7 @@
 import 'dart:ui';
+import 'e_paper_plans.dart';
 import 'package:e_paper/static/loader.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../services/services.dart';
 import '../signin_signup/signin.dart';
 import '../main/preview.dart';
@@ -36,6 +38,58 @@ class _HomeState extends State<Home> {
     });
     return Scaffold(
       key: _scaffoldKey,
+      drawer: Drawer(
+        child: Column(
+          children: <Widget>[
+            UserAccountsDrawerHeader(
+              accountName: Text("Admin"),
+              accountEmail: Text("admin@gmail.com"),
+              currentAccountPicture: Image(
+                image: AssetImage("assets/images/icon.png"),
+                fit: BoxFit.fill,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.indigoAccent[100]
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.home),
+              title: Text("Home",
+                style: GoogleFonts.actor(
+                  color: Colors.black45,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+              onTap: (){},
+            ),
+            ListTile(
+              leading: Icon(Icons.email),
+              title: Text("E-Paper Plans",
+                style: GoogleFonts.actor(
+                  color: Colors.black45,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => EPaperPlans()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.exit_to_app),
+              title: Text("Exit",
+                style: GoogleFonts.actor(
+                  color: Colors.black45,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+              onTap: (){},
+            )
+          ],
+        ),
+      ),
       appBar: PreferredSize(
         child: AppBar(
           title: Text("DASHBOARD",

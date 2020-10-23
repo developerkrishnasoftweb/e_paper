@@ -144,7 +144,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                         ? SizedBox(
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.green          ),
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
                             ),
                             height: 25,
                             width: 25,
