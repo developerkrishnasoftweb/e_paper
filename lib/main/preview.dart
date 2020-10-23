@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'api_services.dart';
+import 'dart:io';
 
 class Preview extends StatefulWidget {
   @override
@@ -10,6 +11,8 @@ class Preview extends StatefulWidget {
 
 class _PreviewState extends State<Preview> {
   String _localFile;
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -22,8 +25,18 @@ class _PreviewState extends State<Preview> {
 
   @override
   Widget build(BuildContext context) {
+    void checkConnection() async {
+      try {
+        final result = await InternetAddress.lookup('google.com');
+        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty);
+      } on SocketException catch (_) {
+        _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("No internet connection !!!")));
+      }
+    }
+    checkConnection();
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      key: _scaffoldKey,
       appBar: PreferredSize(
         child: AppBar(
           title: Text("Back",

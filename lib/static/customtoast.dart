@@ -9,6 +9,7 @@ class CustomToast{
     Color color,
     ToastGravity gravity,
     double height,
+    double width,
     EdgeInsets padding,
     Duration duration,
     List<BoxShadow> boxShadow,
@@ -17,6 +18,7 @@ class CustomToast{
     Widget toast = Container(
       alignment: Alignment.center,
       height: height != null ? height : null,
+      width: width != null ? width : null,
       padding: padding != null ? padding : EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(60.0),

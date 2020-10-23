@@ -1,13 +1,13 @@
 import 'dart:ui';
-
 import 'package:e_paper/static/loader.dart';
-
 import '../services/services.dart';
 import '../signin_signup/signin.dart';
 import '../main/preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
+
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -18,6 +18,15 @@ class _HomeState extends State<Home> {
   List feedData;
   @override
   Widget build(BuildContext context) {
+    void checkConnection() async {
+      try {
+        final result = await InternetAddress.lookup('google.com');
+        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty);
+      } on SocketException catch (_) {
+        _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("No internet connection !!!")));
+      }
+    }
+    checkConnection();
     Size size = MediaQuery.of(context).size;
     Orientation orientation = MediaQuery.of(context).orientation;
     Services.getFeed().then((value) {

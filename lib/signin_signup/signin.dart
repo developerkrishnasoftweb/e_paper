@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import '../static/loader.dart';
+import 'signup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../main/home.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +8,8 @@ import 'package:flutter/animation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../static/customtoast.dart';
 import '../services/services.dart';
+import 'dart:io';
+import 'package:google_fonts/google_fonts.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -21,6 +23,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String username, password;
   FToast fToast;
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -44,9 +47,22 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
   }
   @override
   Widget build(BuildContext context) {
+    void checkConnection() async {
+      try {
+        final result = await InternetAddress.lookup('google.com');
+        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty);
+      } on SocketException catch (_) {
+        _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("No internet connection !!!")));
+        setState(() {
+          showProgress = false;
+        });
+      }
+    }
+    checkConnection();
     Size size = MediaQuery.of(context).size;
     Orientation orientation = MediaQuery.of(context).orientation;
     return Scaffold(
+      key: _scaffoldKey,
       body: Container(
         height: size.height,
         width: size.width,
@@ -59,7 +75,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Image(
-                  image: NetworkImage("https://image.winudf.com/v2/image/a3Jpc2huYXNvZnR3YXJlLmNvbS52aXNodmFzeWF2cnV0YW50YW1OZXdzX2ljb25fMF84NmUxNzgxMg/icon.png?w=170&fakeurl=1"),
+                  image: AssetImage("assets/images/icon.png"),
                   height: orientation == Orientation.portrait ? 150 : 100,
                   width: orientation == Orientation.portrait ? 150 : 100,
                   fit: BoxFit.fill,
@@ -163,7 +179,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                                 showProgress = false;
                               });
                               CustomToast.showToast(fToast: fToast,
-                                text: "Invalid username or password",
+                                text: data.message,
                                 icon: Icon(Icons.sentiment_very_dissatisfied, color: Colors.white,),
                                 color: Colors.white,
                                 backgroundColor: Colors.black,
@@ -219,7 +235,35 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                         ]
                     ),
                   ),
-                )
+                ),
+                Container(
+                  width: size.width,
+                  padding: EdgeInsets.only(bottom: 20),
+                  alignment: Alignment.center,
+                  child: RichText(
+                    text: TextSpan(children: [
+                      TextSpan(
+                          text: "New to Visvasya Vrutantam",
+                          style: GoogleFonts.actor(
+                            color: Colors.black54,
+                          )),
+                      WidgetSpan(
+                        alignment: PlaceholderAlignment.middle,
+                        child: InkWell(
+                          child: Text("\tSignUp",
+                              style: GoogleFonts.actor(
+                                  color: Colors.black,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold
+                              )),
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
+                          },
+                        ),
+                      )
+                    ]),
+                  ),
+                ),
               ],
             ),
           ),
