@@ -114,9 +114,6 @@ class _HomeState extends State<Home> {
                           OctoImage(
                             image: NetworkImage("http://newspaper.nirvanacreators.com/upload/" + feedData[index]["image"].toString()),
                             placeholderBuilder: OctoPlaceholder.circularProgressIndicator(),
-                            // placeholderBuilder: OctoPlaceholder.blurHash(
-                            //   'LEHV6nWB2yk8pyo0adR*.7kCMdnj',
-                            // ),
                             // progressIndicatorBuilder: (context, progress) {
                             //   double value;
                             //   if (progress != null && progress.expectedTotalBytes != null) {
