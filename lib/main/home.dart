@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:e_paper/static/drawer.dart';
 import 'package:e_paper/static/loader.dart';
+import 'package:octo_image/octo_image.dart';
 import '../services/services.dart';
 import '../signin_signup/signin.dart';
 import 'package:flutter/material.dart';
@@ -110,11 +111,24 @@ class _HomeState extends State<Home> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Image(
+                          OctoImage(
+                            image: NetworkImage("http://newspaper.nirvanacreators.com/upload/" + feedData[index]["image"].toString()),
+                            placeholderBuilder: OctoPlaceholder.circularProgressIndicator(),
+                            // placeholderBuilder: OctoPlaceholder.blurHash(
+                            //   'LEHV6nWB2yk8pyo0adR*.7kCMdnj',
+                            // ),
+                            // progressIndicatorBuilder: (context, progress) {
+                            //   double value;
+                            //   if (progress != null && progress.expectedTotalBytes != null) {
+                            //     value =
+                            //         progress.cumulativeBytesLoaded / progress.expectedTotalBytes;
+                            //   }
+                            //   return CircularProgressIndicator(value: value,);
+                            // },
+                            errorBuilder: OctoError.icon(color: Colors.red),
+                            fit: BoxFit.cover,
                             height: orientation == Orientation.portrait ? 200 : 150,
                             width: orientation == Orientation.portrait ? size.width * 0.9 : size.width * 0.5,
-                            image: NetworkImage("http://newspaper.nirvanacreators.com/upload/" + feedData[index]["image"]),
-                            fit: BoxFit.fill,
                           ),
                           Container(
                             child: RichText(
