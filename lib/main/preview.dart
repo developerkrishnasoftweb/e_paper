@@ -12,10 +12,19 @@ class Preview extends StatefulWidget {
 class _PreviewState extends State<Preview> {
   String _localFile;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  void checkConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty);
+    } on SocketException catch (_) {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("No internet connection !!!")));
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    checkConnection();
     APIServices.loadPDF().then((value) {
       setState(() {
         _localFile = value;
@@ -25,15 +34,6 @@ class _PreviewState extends State<Preview> {
 
   @override
   Widget build(BuildContext context) {
-    void checkConnection() async {
-      try {
-        final result = await InternetAddress.lookup('google.com');
-        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty);
-      } on SocketException catch (_) {
-        _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("No internet connection !!!")));
-      }
-    }
-    checkConnection();
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       key: _scaffoldKey,

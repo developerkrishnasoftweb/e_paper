@@ -1,10 +1,8 @@
 import 'dart:ui';
-import 'e_paper_plans.dart';
+import 'package:e_paper/static/drawer.dart';
 import 'package:e_paper/static/loader.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../services/services.dart';
 import '../signin_signup/signin.dart';
-import '../main/preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,17 +16,24 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List feedData;
+
+  void checkConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty);
+    } on SocketException catch (_) {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("No internet connection !!!")));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkConnection();
+  }
+
   @override
   Widget build(BuildContext context) {
-    void checkConnection() async {
-      try {
-        final result = await InternetAddress.lookup('google.com');
-        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty);
-      } on SocketException catch (_) {
-        _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("No internet connection !!!")));
-      }
-    }
-    checkConnection();
     Size size = MediaQuery.of(context).size;
     Orientation orientation = MediaQuery.of(context).orientation;
     Services.getFeed().then((value) {
@@ -38,58 +43,7 @@ class _HomeState extends State<Home> {
     });
     return Scaffold(
       key: _scaffoldKey,
-      drawer: Drawer(
-        child: Column(
-          children: <Widget>[
-            UserAccountsDrawerHeader(
-              accountName: Text("Admin"),
-              accountEmail: Text("admin@gmail.com"),
-              currentAccountPicture: Image(
-                image: AssetImage("assets/images/icon.png"),
-                fit: BoxFit.fill,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.indigoAccent[100]
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text("Home",
-                style: GoogleFonts.actor(
-                  color: Colors.black45,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-              onTap: (){},
-            ),
-            ListTile(
-              leading: Icon(Icons.email),
-              title: Text("E-Paper Plans",
-                style: GoogleFonts.actor(
-                  color: Colors.black45,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => EPaperPlans()));
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.exit_to_app),
-              title: Text("Exit",
-                style: GoogleFonts.actor(
-                  color: Colors.black45,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-              onTap: (){},
-            )
-          ],
-        ),
-      ),
+      drawer: CustomDrawer(),
       appBar: PreferredSize(
         child: AppBar(
           title: Text("DASHBOARD",
@@ -214,7 +168,7 @@ class _HomeState extends State<Home> {
                                   side: BorderSide(color: Colors.indigoAccent, style: BorderStyle.solid,)
                               ),
                               onPressed: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => Preview()));
+                                Navigator.pushNamed(context, "/preview");
                               },
                             ),
                           )

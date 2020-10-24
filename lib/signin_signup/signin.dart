@@ -24,14 +24,27 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
   String username, password;
   FToast fToast;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  void checkConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty);
+    } on SocketException catch (_) {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("No internet connection !!!")));
+      setState(() {
+        showProgress = false;
+      });
+    }
+  }
 
   @override
   void initState() {
     getCredential().then((value) {
       if(value){
+        checkConnection();
         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Home()), (route) => false);
       }
     });
+    checkConnection();
     super.initState();
     controller = AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
     fToast = FToast();
@@ -47,18 +60,6 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
   }
   @override
   Widget build(BuildContext context) {
-    void checkConnection() async {
-      try {
-        final result = await InternetAddress.lookup('google.com');
-        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty);
-      } on SocketException catch (_) {
-        _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("No internet connection !!!")));
-        setState(() {
-          showProgress = false;
-        });
-      }
-    }
-    checkConnection();
     Size size = MediaQuery.of(context).size;
     Orientation orientation = MediaQuery.of(context).orientation;
     return Scaffold(

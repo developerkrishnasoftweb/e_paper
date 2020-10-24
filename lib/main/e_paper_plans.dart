@@ -1,3 +1,5 @@
+import 'package:e_paper/signin_signup/signup.dart';
+import 'package:e_paper/static/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,8 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import 'dart:ui';
 import 'package:e_paper/static/loader.dart';
-import '../signin_signup/signin.dart';
-import 'dart:math';
 
 class EPaperPlans extends StatefulWidget {
   @override
@@ -42,6 +42,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
     // });
     return Scaffold(
       key: _scaffoldKey,
+      drawer: CustomDrawer(),
       appBar: PreferredSize(
         child: AppBar(
           title: Text("DASHBOARD",
@@ -67,7 +68,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
                     SharedPreferences pref = await SharedPreferences.getInstance();
                     pref.clear().then((value) {
                       if(value){
-                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignIn()), (route) => false);
+                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignUp()), (route) => false);
                       }
                     });
                   },

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:e_paper/services/services.dart';
@@ -22,9 +23,19 @@ class _SignUp extends State<SignUp> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   FToast fToast;
 
+  void checkConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty);
+    } on SocketException catch (_) {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("No internet connection !!!")));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    checkConnection();
     fToast = FToast();
     fToast.init(context);
   }
@@ -337,7 +348,6 @@ class _SignUp extends State<SignUp> {
                             _isButtonDisabled = !_isButtonDisabled;
                           });
                           if(username != "" && username != null) {
-                            print(mobileNo);
                             RegExp regExp = new RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)');
                             if(regExp.hasMatch(mobileNo)){
                               if(mobileNo != "" && mobileNo != null){
