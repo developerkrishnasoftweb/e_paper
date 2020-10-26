@@ -21,13 +21,6 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: SignIn(),
-      routes: {
-        "/home" : (BuildContext context) => Home(),
-        "/preview" : (BuildContext context) => Preview(),
-        "/e_paper_plans" : (BuildContext context) => EPaperPlans(),
-        "sign_in" : (BuildContext context) => SignIn(),
-        "sign_up" : (BuildContext context) => SignUp(),
-      },
     );
   }
 }
