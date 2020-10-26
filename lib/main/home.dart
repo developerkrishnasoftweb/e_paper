@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'preview.dart';
 import 'package:e_paper/static/drawer.dart';
 import 'package:e_paper/static/loader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -172,7 +173,7 @@ class _HomeState extends State<Home> {
                                   side: BorderSide(color: Colors.indigoAccent, style: BorderStyle.solid,)
                               ),
                               onPressed: (){
-                                Navigator.pushNamed(context, "/preview");
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => Preview()));
                               },
                             ),
                           )
