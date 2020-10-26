@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/animation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../static/customtoast.dart';
 import '../services/services.dart';
 import 'dart:io';
 import 'package:google_fonts/google_fonts.dart';
@@ -75,8 +74,8 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Image(
-                  image: AssetImage("assets/images/icon.png"),
+                Image.asset(
+                  "assets/images/logo.gif",
                   height: orientation == Orientation.portrait ? 150 : 100,
                   width: orientation == Orientation.portrait ? 150 : 100,
                   fit: BoxFit.fill,
@@ -135,7 +134,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                 ),
                 Container(
                   margin: EdgeInsets.only(top: orientation == Orientation.portrait ? 25 : 15),
-                  width: size.width * 0.7,
+                  width: size.width * 0.8,
                   height: 50,
                   child: FlatButton(
                     shape: RoundedRectangleBorder(
@@ -179,30 +178,14 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                               setState(() {
                                 showProgress = false;
                               });
-                              CustomToast.showToast(fToast: fToast,
-                                text: data.message,
-                                icon: Icon(Icons.sentiment_very_dissatisfied, color: Colors.white,),
-                                color: Colors.white,
-                                backgroundColor: Colors.black,
-                                gravity: ToastGravity.CENTER,
-                                height: 50,
-                                duration: Duration(seconds: 2),
-                              );
+                              Fluttertoast.showToast(msg: data.message.toString(), gravity: ToastGravity.BOTTOM);
                             }
                           });
                         } else {
                           setState(() {
                             showProgress = false;
                           });
-                          CustomToast.showToast(fToast: fToast,
-                            text: "Please enter username and password",
-                            icon: Icon(Icons.cancel, color: Colors.white,),
-                            color: Colors.white,
-                            backgroundColor: Colors.black,
-                            gravity: ToastGravity.CENTER,
-                            height: 50,
-                            duration: Duration(seconds: 2),
-                          );
+                          Fluttertoast.showToast(msg: "Please Enter Username and Password", gravity: ToastGravity.BOTTOM);
                         }
                       }
                     } : null,

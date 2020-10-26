@@ -59,7 +59,7 @@ class _SignUp extends State<SignUp> {
                 height: 50,
               ),
               Image(
-                image: AssetImage("assets/images/icon.png"),
+                image: AssetImage("assets/images/logo.gif"),
                 height: orientation == Orientation.portrait ? 150 : 100,
                 width: orientation == Orientation.portrait ? 150 : 100,
                 fit: BoxFit.fill,
@@ -469,25 +469,9 @@ class _SignUp extends State<SignUp> {
       });
       if(value.response == "1" || value.response == 1){
         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignIn()), (route) => false);
-        CustomToast.showToast(fToast: fToast,
-          text: value.message,
-          color: Colors.white,
-          backgroundColor: Colors.black,
-          gravity: ToastGravity.CENTER,
-          height: 50,
-          duration: Duration(seconds: 2),
-          width: MediaQuery.of(context).size.width * 0.7
-        );
+        Fluttertoast.showToast(msg: value.message, gravity: ToastGravity.BOTTOM, toastLength: Toast.LENGTH_LONG);
       } else {
-        CustomToast.showToast(fToast: fToast,
-          text: value.message,
-          color: Colors.white,
-          backgroundColor: Colors.black,
-          gravity: ToastGravity.CENTER,
-          height: 50,
-          duration: Duration(seconds: 2),
-          width: MediaQuery.of(context).size.width * 0.7
-        );
+        Fluttertoast.showToast(msg: value.message, gravity: ToastGravity.BOTTOM);
       }
     });
   }

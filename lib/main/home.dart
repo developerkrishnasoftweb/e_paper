@@ -1,13 +1,13 @@
 import 'dart:ui';
 import 'package:e_paper/static/drawer.dart';
 import 'package:e_paper/static/loader.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:octo_image/octo_image.dart';
 import '../services/services.dart';
 import '../signin_signup/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:io';
 
 class Home extends StatefulWidget {
   @override
@@ -17,20 +17,9 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List feedData;
-
-  void checkConnection() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty);
-    } on SocketException catch (_) {
-      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("No internet connection !!!")));
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    checkConnection();
   }
 
   @override
@@ -38,9 +27,13 @@ class _HomeState extends State<Home> {
     Size size = MediaQuery.of(context).size;
     Orientation orientation = MediaQuery.of(context).orientation;
     Services.getFeed().then((value) {
-      setState(() {
-        feedData = value.data;
-      });
+      if(value.response == 1){
+        setState(() {
+          feedData = value.data;
+        });
+      } else {
+        Fluttertoast.showToast(msg: value.message.toString(), gravity: ToastGravity.BOTTOM);
+      }
     });
     return Scaffold(
       key: _scaffoldKey,
