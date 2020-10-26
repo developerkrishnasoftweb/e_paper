@@ -1,4 +1,4 @@
-import 'package:e_paper/signin_signup/signup.dart';
+import '../signin_signup/signin.dart';
 import 'package:e_paper/static/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -68,7 +68,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
                     SharedPreferences pref = await SharedPreferences.getInstance();
                     pref.clear().then((value) {
                       if(value){
-                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignUp()), (route) => false);
+                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignIn()), (route) => false);
                       }
                     });
                   },
@@ -96,7 +96,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
                       crossAxisCount: orientation == Orientation.portrait ? 1 : 2,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
-                      childAspectRatio: size.width / 460
+                      childAspectRatio: 300 / (orientation == Orientation.portrait ? 360 : 320)
                   ),
                   itemBuilder: (BuildContext context, int index){
                     return Container(
@@ -256,7 +256,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
                             ),
                           ),
                           Container(
-                            margin: EdgeInsets.symmetric(vertical: 20),
+                            margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                             child: FlatButton(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5),
