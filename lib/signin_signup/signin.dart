@@ -10,6 +10,7 @@ import '../constant/colors.dart';
 import '../constant/global.dart';
 import '../main.dart';
 import '../services/services.dart';
+import '../static/input.dart';
 import '../ui/home.dart';
 import 'signup.dart';
 
@@ -66,27 +67,29 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
               ),
               input(
                   context: context,
-                  hintText: "Username",
-                  iconData: Icons.person,
+                  text: "Username",
                   controller: username,
+                  decoration: InputDecoration(border: border()),
+                  margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.emailAddress),
               input(
                   context: context,
-                  hintText: "Password",
-                  iconData: Icons.lock,
+                  text: "Password",
                   obscureText: true,
                   controller: password,
+                  margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  decoration: InputDecoration(border: border()),
                   textInputAction: TextInputAction.done,
                   onEditingComplete: _login),
               Container(
                 margin: EdgeInsets.only(
                     top: orientation == Orientation.portrait ? 25 : 15),
-                width: size.width * 0.8,
-                height: 50,
+                width: size.width - 60,
+                height: 60,
                 child: FlatButton(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(60),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: showProgress
                       ? SizedBox(
@@ -191,55 +194,4 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
       showToastMessage("Please enter username and password");
     }
   }
-}
-
-Widget input(
-    {@required BuildContext context,
-    ValueChanged<String> onChanged,
-    VoidCallback onEditingComplete,
-    bool obscureText = false,
-    String hintText,
-    IconData iconData,
-    TextInputType keyboardType,
-    TextEditingController controller,
-    TextInputAction textInputAction}) {
-  Size size = MediaQuery.of(context).size;
-  return Container(
-    width: size.width * 0.8,
-    height: 60,
-    margin: EdgeInsets.only(top: 5),
-    child: TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(60),
-          borderSide: BorderSide(
-            color: Colors.black38,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(60),
-          borderSide: BorderSide(
-            color: primaryColor,
-          ),
-        ),
-        hintText: hintText,
-        hintStyle: TextStyle(
-          fontSize: 16,
-        ),
-        contentPadding:
-            EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 15),
-        prefixIcon: Icon(
-          iconData,
-          color: primaryColor,
-        ),
-      ),
-      cursorColor: primaryColor,
-      onChanged: onChanged,
-      onEditingComplete: onEditingComplete,
-      keyboardType: keyboardType,
-      textInputAction: textInputAction,
-      obscureText: obscureText,
-    ),
-  );
 }
