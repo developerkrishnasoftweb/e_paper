@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:e_paper/constant/global.dart';
+import 'package:e_paper/services/services.dart';
 import 'package:e_paper/services/urls.dart';
 import 'package:e_paper/static/input.dart';
 import 'package:file_picker/file_picker.dart';
@@ -16,9 +17,9 @@ class ManageAccount extends StatefulWidget {
 
 class _ManageAccountState extends State<ManageAccount> {
   TextEditingController firstName, lastName, email, mobile;
+  bool isLoading = false;
   EdgeInsetsGeometry padding =
       EdgeInsets.symmetric(horizontal: 10, vertical: 15);
-  bool isLoading = false;
   File image;
 
   setLoading(bool status) {
@@ -53,6 +54,19 @@ class _ManageAccountState extends State<ManageAccount> {
           ),
         ),
         backgroundColor: primaryColor,
+        actions: [
+          IconButton(
+              icon: isLoading
+                  ? SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(Colors.white),
+                        strokeWidth: 2,
+                      ))
+                  : Icon(Icons.check_circle_outline),
+              onPressed: isLoading ? null : _update)
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
@@ -76,42 +90,15 @@ class _ManageAccountState extends State<ManageAccount> {
                 width: size.width * 0.9,
                 text: "Email",
                 controller: email,
+                onChanged: _isEmailAvailable,
                 decoration: InputDecoration(border: border())),
             input(
                 context: context,
                 width: size.width * 0.9,
                 text: "Mobile",
                 controller: mobile,
+                onChanged: _isMobileAvailable,
                 decoration: InputDecoration(border: border())),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              width: size.width,
-              height: 60,
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: FlatButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: isLoading
-                    ? SizedBox(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(primaryColor),
-                        ),
-                        height: 25,
-                        width: 25,
-                      )
-                    : Text(
-                        "Modify",
-                        style: TextStyle(color: Colors.white, fontSize: 17),
-                      ),
-                onPressed: !isLoading ? _update : null,
-                color: primaryColor,
-              ),
-            ),
           ],
         ),
       ),
@@ -154,5 +141,35 @@ class _ManageAccountState extends State<ManageAccount> {
             : null,
       ),
     );
+  }
+
+  _isMobileAvailable(value) async {
+    if (RegExp(r"^(?:[+0]9)?[0-9]{10}$").hasMatch(value)) {
+      setLoading(true);
+      await Services.isAvailable(mobile: value).then((value) {
+        if (!value.response) {
+          showToastMessage(value.message);
+          setLoading(false);
+        } else {
+          setLoading(false);
+        }
+      });
+    }
+  }
+
+  _isEmailAvailable(value) async {
+    if (RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(value)) {
+      setLoading(true);
+      await Services.isAvailable(email: value).then((value) {
+        if (!value.response) {
+          showToastMessage(value.message);
+          setLoading(false);
+        } else {
+          setLoading(false);
+        }
+      });
+    }
   }
 }

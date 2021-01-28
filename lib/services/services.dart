@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart' as dio;
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -50,6 +51,28 @@ class Services {
         data.response = jsonResponse["status"];
         data.data = jsonResponse["data"];
         return data;
+      }
+      return null;
+    } on SocketException catch (_) {
+      return noInternetConnection;
+    } catch (e) {
+      return somethingWentWrong;
+    }
+  }
+
+  static Future<Data> isAvailable({String mobile, String email}) async {
+    String url = Urls.baseUrl + Urls.isAvailable;
+    try {
+      dio.Response response;
+      response = await dio.Dio().post(url,
+          data: mobile != null
+              ? FormData.fromMap({"mobile": mobile})
+              : FormData.fromMap({"email": email}));
+      if (response.statusCode == 200) {
+        return Data(
+            message: response.data["message"],
+            data: response.data["data"],
+            response: response.data["status"]);
       }
       return null;
     } on SocketException catch (_) {

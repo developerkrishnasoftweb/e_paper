@@ -5,4 +5,5 @@ class Urls {
   static String signUp = "register";
   static String ePaper = "news";
   static String getSubscription = "subscription_plan";
+  static String isAvailable = "profile/is-available";
 }
