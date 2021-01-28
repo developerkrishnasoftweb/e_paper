@@ -1,14 +1,13 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:dio/dio.dart';
-import 'package:e_paper/services/services.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../constant/global.dart';
+import '../services/services.dart';
 import 'signin.dart';
 
 class SignUp extends StatefulWidget {
@@ -22,24 +21,11 @@ class _SignUp extends State<SignUp> {
   Color showPassword = Colors.black54;
   bool _showPassword = true;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  FToast fToast;
-
-  void checkConnection() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) ;
-    } on SocketException catch (_) {
-      _scaffoldKey.currentState
-          .showSnackBar(SnackBar(content: Text("No internet connection !!!")));
-    }
-  }
 
   @override
   void initState() {
     super.initState();
-    checkConnection();
-    fToast = FToast();
-    fToast.init(context);
+    checkConnection(scaffoldKey: _scaffoldKey);
   }
 
   @override
@@ -506,13 +492,9 @@ class _SignUp extends State<SignUp> {
             context,
             MaterialPageRoute(builder: (context) => SignIn()),
             (route) => false);
-        Fluttertoast.showToast(
-            msg: value.message,
-            gravity: ToastGravity.BOTTOM,
-            toastLength: Toast.LENGTH_LONG);
+        showToastMessage(value.message);
       } else {
-        Fluttertoast.showToast(
-            msg: value.message, gravity: ToastGravity.BOTTOM);
+        showToastMessage(value.message);
       }
     });
   }

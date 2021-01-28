@@ -1,17 +1,16 @@
 import 'dart:ui';
 
-import 'package:e_paper/constant/colors.dart';
-import 'package:e_paper/constant/global.dart';
-import 'package:e_paper/services/urls.dart';
-import 'package:e_paper/static/drawer.dart';
-import 'package:e_paper/static/loader.dart';
-import 'package:e_paper/ui/preview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../constant/colors.dart';
+import '../constant/global.dart';
 import '../services/services.dart';
+import '../services/urls.dart';
 import '../signin_signup/signin.dart';
+import '../static/drawer.dart';
+import '../ui/preview.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -48,13 +47,30 @@ class _HomeState extends State<Home> {
     });
   }
 
+  _logout() async {
+    loader(context: context, text: "Logging out ...");
+    String email = sharedPreferences.getString(Params.userName);
+    userdata = null;
+    sharedPreferences.clear().then((value) {
+      if (value) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SignIn(
+                      username: email,
+                    )),
+            (route) => false);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     Orientation orientation = MediaQuery.of(context).orientation;
     return Scaffold(
         key: _scaffoldKey,
-        drawer: drawer(context: context, scaffoldKey: _scaffoldKey),
+        drawer: CustomDrawer(),
         appBar: AppBar(
           title: Text(
             "Home",
@@ -62,31 +78,19 @@ class _HomeState extends State<Home> {
               color: Colors.white,
             ),
           ),
-          automaticallyImplyLeading: false,
           actions: [
             Center(
               child: Padding(
                 padding: const EdgeInsets.only(right: 10.0),
                 child: GestureDetector(
-                  child: Text(
-                    "LOG OUT",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  onTap: () async {
-                    Loader(context: context, text: "Logging out ...");
-                    sharedPreferences.clear().then((value) {
-                      if (value) {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => SignIn()),
-                            (route) => false);
-                      }
-                    });
-                  },
-                ),
+                    child: Text(
+                      "LOG OUT",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    onTap: _logout),
               ),
             )
           ],

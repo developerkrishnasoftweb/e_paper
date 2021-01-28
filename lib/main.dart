@@ -1,12 +1,13 @@
 import 'dart:convert';
 
-import 'package:e_paper/constant/global.dart';
-import 'package:e_paper/ui/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'signin_signup/signin.dart';
+import './constant/colors.dart';
+import './constant/global.dart';
+import 'ui/home.dart';
+import 'ui/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +17,7 @@ Future<void> main() async {
   runApp(MaterialApp(
       title: 'E Paper',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: primaryColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       debugShowCheckedModeBanner: false,
@@ -50,45 +51,5 @@ Future<bool> getCredential() async {
     return true;
   } else {
     return false;
-  }
-}
-
-//splash screen
-class Splash extends StatefulWidget {
-  @override
-  _SplashState createState() => _SplashState();
-}
-
-class _SplashState extends State<Splash> {
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration(milliseconds: 2000), () {
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => SignIn()), (route) => false);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return Container(
-      height: size.height - MediaQuery.of(context).padding.top,
-      width: size.width,
-      color: Colors.white,
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image.asset(
-            "assets/images/logo.gif",
-            height: 150,
-            width: 150,
-            fit: BoxFit.fill,
-          ),
-        ],
-      ),
-    );
   }
 }
