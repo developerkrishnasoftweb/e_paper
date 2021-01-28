@@ -40,7 +40,7 @@ Widget input(
               )
             : SizedBox(),
         SizedBox(
-          height: text != null ? 10 : 0,
+          height: text != null ? 5 : 0,
         ),
         Container(
           height: height,
@@ -68,6 +68,6 @@ Widget input(
 
 OutlineInputBorder border({double borderRadius}) {
   return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(borderRadius ?? 10),
+      borderRadius: BorderRadius.circular(borderRadius ?? 5),
       borderSide: BorderSide(color: Colors.grey));
 }

@@ -1,8 +1,7 @@
-import 'package:e_paper/constant/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
+import '../constant/colors.dart';
 import '../constant/global.dart';
 import '../services/urls.dart';
 import '../ui/account.dart';
@@ -106,7 +105,7 @@ Widget _createDrawerItem(
         gap,
         Text(
           text,
-          style: GoogleFonts.actor(
+          style: TextStyle(
               color: color, fontSize: 18.0, fontWeight: FontWeight.bold),
         )
       ],

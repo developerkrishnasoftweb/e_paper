@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:e_paper/services/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../constant/colors.dart';
 import '../constant/global.dart';
@@ -94,7 +93,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
                         ),
                         child: Text(
                           "${plans[index].title}",
-                          style: GoogleFonts.varelaRound(
+                          style: TextStyle(
                               color: Colors.black45,
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold),
@@ -106,14 +105,14 @@ class _EPaperPlansState extends State<EPaperPlans> {
                       RichText(
                         text: TextSpan(
                             text: "\u20B9\t",
-                            style: GoogleFonts.varelaRound(
+                            style: TextStyle(
                               color: Colors.black45,
                               fontSize: 50.0,
                             ),
                             children: [
                               TextSpan(
                                 text: "${plans[index].priceINR}",
-                                style: GoogleFonts.varelaRound(
+                                style: TextStyle(
                                   color: Colors.black45,
                                   fontSize: 45.0,
                                 ),
@@ -139,7 +138,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
                                 )),
                             TextSpan(
                               text: "${plans[index].planValidity} Days plan",
-                              style: GoogleFonts.stylish(
+                              style: TextStyle(
                                 color: Colors.black45,
                                 fontSize: 20.0,
                               ),
@@ -163,7 +162,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
                                 )),
                             TextSpan(
                               text: "${plans[index].features}",
-                              style: GoogleFonts.stylish(
+                              style: TextStyle(
                                 color: Colors.black45,
                                 fontSize: 20.0,
                               ),
@@ -181,8 +180,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
                           onPressed: () {},
                           child: Text(
                             "Buy Now",
-                            style: GoogleFonts.ubuntu(
-                                color: primaryColor, fontSize: 18),
+                            style: TextStyle(color: primaryColor, fontSize: 18),
                           ),
                           splashColor: primarySwatch[100],
                           highlightColor: primarySwatch[100],

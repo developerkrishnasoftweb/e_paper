@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../constant/colors.dart';
 import '../constant/global.dart';
@@ -69,6 +68,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                   context: context,
                   text: "Username",
                   controller: username,
+                  style: TextStyle(fontSize: 19),
                   decoration: InputDecoration(border: border()),
                   margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   textInputAction: TextInputAction.next,
@@ -78,6 +78,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                   text: "Password",
                   obscureText: true,
                   controller: password,
+                  style: TextStyle(fontSize: 19),
                   margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   decoration: InputDecoration(border: border()),
                   textInputAction: TextInputAction.done,
@@ -136,14 +137,14 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                 text: TextSpan(children: [
                   TextSpan(
                       text: "New to Visvasya Vrutantam",
-                      style: GoogleFonts.actor(
+                      style: TextStyle(
                         color: Colors.black54,
                       )),
                   WidgetSpan(
                     alignment: PlaceholderAlignment.middle,
                     child: InkWell(
                       child: Text("\tSignUp",
-                          style: GoogleFonts.actor(
+                          style: TextStyle(
                               color: primaryColor,
                               fontSize: 17,
                               fontWeight: FontWeight.bold)),

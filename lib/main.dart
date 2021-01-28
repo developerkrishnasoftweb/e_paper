@@ -17,9 +17,9 @@ Future<void> main() async {
   runApp(MaterialApp(
       title: 'E Paper',
       theme: ThemeData(
-        primarySwatch: primaryColor,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+          primarySwatch: primaryColor,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          fontFamily: "Poppins"),
       debugShowCheckedModeBanner: false,
       home: status ? Home() : Splash()));
 
