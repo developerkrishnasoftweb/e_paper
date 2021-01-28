@@ -83,6 +83,30 @@ class Services {
     }
   }
 
+  static Future<Data> getSubscription() async {
+    String url = Urls.baseUrl + Urls.getSubscription;
+    try {
+      dio.Response response = await dio.Dio().get(url);
+      if (response.statusCode == 200) {
+        return Data(
+            response: response.data["status"],
+            message: response.data["message"],
+            data: [response.data["data"]]);
+      }
+      return null;
+    } on dio.DioError catch (e) {
+      if (e.type == dio.DioErrorType.DEFAULT &&
+          e.error.runtimeType == SocketException) {
+        return noInternetConnection;
+      } else {
+        return somethingWentWrong;
+      }
+    } catch (e) {
+      print(e);
+      return somethingWentWrong;
+    }
+  }
+
   static Future<String> loadPDF({@required String pdfFile}) async {
     var response = await http.get(Urls.assetBaseUrl + pdfFile);
     var dir = await getTemporaryDirectory();

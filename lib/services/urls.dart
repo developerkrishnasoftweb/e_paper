@@ -4,4 +4,5 @@ class Urls {
   static String signIn = "login";
   static String signUp = "register";
   static String ePaper = "news";
+  static String getSubscription = "subscription_plan";
 }

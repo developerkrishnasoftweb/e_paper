@@ -1,12 +1,12 @@
 import 'dart:ui';
 
+import 'package:e_paper/services/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../constant/colors.dart';
 import '../constant/global.dart';
-import '../static/drawer.dart';
 
 class EPaperPlans extends StatefulWidget {
   @override
@@ -15,21 +15,38 @@ class EPaperPlans extends StatefulWidget {
 
 class _EPaperPlansState extends State<EPaperPlans> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List plans;
+  List<SubscriptionPlan> plans = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getSubscriptionPlans();
+  }
+
+  getSubscriptionPlans() async {
+    await Services.getSubscription().then((value) {
+      for (int i = 0; i < value.data[0].length; i++) {
+        setState(() {
+          plans.add(SubscriptionPlan(
+              title: value.data[0][i]["title"],
+              id: value.data[0][i]["id"],
+              features: value.data[0][i]["features"],
+              planType: value.data[0][i]["plan_type"],
+              planValidity: value.data[0][i]["plan_validity"],
+              priceINR: value.data[0][i]["price_inr"],
+              priceUSD: value.data[0][i]["price_usd"]));
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     checkConnection(scaffoldKey: _scaffoldKey);
     Size size = MediaQuery.of(context).size;
     Orientation orientation = MediaQuery.of(context).orientation;
-    setState(() {
-      plans = [
-        {"name": "abcd"}
-      ];
-    });
     return Scaffold(
       key: _scaffoldKey,
-      drawer: CustomDrawer(),
       appBar: AppBar(
         title: Text(
           "Subscription Plans",
@@ -45,7 +62,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
         automaticallyImplyLeading: false,
         backgroundColor: primaryColor,
       ),
-      body: plans != null
+      body: plans.length > 0
           ? GridView.builder(
               padding: EdgeInsets.all(5),
               physics: BouncingScrollPhysics(),
@@ -76,32 +93,35 @@ class _EPaperPlansState extends State<EPaperPlans> {
                                   color: Colors.black12, width: 1.5)),
                         ),
                         child: Text(
-                          "Trial Plan (One Time)",
+                          "${plans[index].title}",
                           style: GoogleFonts.varelaRound(
                               color: Colors.black45,
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold),
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        child: RichText(
-                          text: TextSpan(
-                              text: "\u20B9\t",
-                              style: GoogleFonts.varelaRound(
-                                color: Colors.black45,
-                                fontSize: 50.0,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: (index * 100).toString(),
-                                  style: GoogleFonts.varelaRound(
-                                    color: Colors.black45,
-                                    fontSize: 45.0,
-                                  ),
-                                )
-                              ]),
-                        ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      RichText(
+                        text: TextSpan(
+                            text: "\u20B9\t",
+                            style: GoogleFonts.varelaRound(
+                              color: Colors.black45,
+                              fontSize: 50.0,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: "${plans[index].priceINR}",
+                                style: GoogleFonts.varelaRound(
+                                  color: Colors.black45,
+                                  fontSize: 45.0,
+                                ),
+                              )
+                            ]),
+                      ),
+                      SizedBox(
+                        height: 20,
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 5),
@@ -118,7 +138,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
                                       color: Colors.black45),
                                 )),
                             TextSpan(
-                              text: "2 Days plan",
+                              text: "${plans[index].planValidity} Days plan",
                               style: GoogleFonts.stylish(
                                 color: Colors.black45,
                                 fontSize: 20.0,
@@ -142,55 +162,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
                                       color: Colors.black45),
                                 )),
                             TextSpan(
-                              text: "For Single User",
-                              style: GoogleFonts.stylish(
-                                color: Colors.black45,
-                                fontSize: 20.0,
-                              ),
-                            )
-                          ]),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 5),
-                        child: RichText(
-                          text: TextSpan(children: [
-                            WidgetSpan(
-                                alignment: PlaceholderAlignment.middle,
-                                child: Container(
-                                  height: 5,
-                                  width: 5,
-                                  margin: EdgeInsets.symmetric(horizontal: 10),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.black45),
-                                )),
-                            TextSpan(
-                              text: "All device support",
-                              style: GoogleFonts.stylish(
-                                color: Colors.black45,
-                                fontSize: 20.0,
-                              ),
-                            )
-                          ]),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 5),
-                        child: RichText(
-                          text: TextSpan(children: [
-                            WidgetSpan(
-                                alignment: PlaceholderAlignment.middle,
-                                child: Container(
-                                  height: 5,
-                                  width: 5,
-                                  margin: EdgeInsets.symmetric(horizontal: 10),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.black45),
-                                )),
-                            TextSpan(
-                              text: "Support AgentSupport Agent",
+                              text: "${plans[index].features}",
                               style: GoogleFonts.stylish(
                                 color: Colors.black45,
                                 fontSize: 20.0,
@@ -205,33 +177,41 @@ class _EPaperPlansState extends State<EPaperPlans> {
                         child: FlatButton(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
-                              side: BorderSide(
-                                  color: Color.fromRGBO(0, 123, 255, 1))),
+                              side: BorderSide(color: primaryColor)),
                           onPressed: () {},
                           child: Text(
-                            "Subscribe Now",
+                            "Buy Now",
                             style: GoogleFonts.ubuntu(
-                                color: Color.fromRGBO(0, 123, 255, 1),
-                                fontSize: 18),
+                                color: primaryColor, fontSize: 18),
                           ),
-                          splashColor: Color.fromRGBO(0, 123, 255, 0.4),
-                          // hoverColor: Color.fromRGBO(0, 123, 255, 0.4 ),
-                          // focusColor: Color.fromRGBO(0, 123, 255, 0.4),
-                          highlightColor: Color.fromRGBO(0, 123, 255, 0.4),
+                          splashColor: primarySwatch[100],
+                          highlightColor: primarySwatch[100],
                         ),
                         height: 60,
-                        width: size.width * 0.8,
+                        width: size.width * 0.7,
                       )
                     ],
                   ),
                 );
               },
-              itemCount: 5,
+              itemCount: plans.length,
               controller: ScrollController(keepScrollOffset: true),
               shrinkWrap: true,
               scrollDirection: Axis.vertical,
             )
-          : CircularProgressIndicator(),
+          : Center(child: CircularProgressIndicator()),
     );
   }
+}
+
+class SubscriptionPlan {
+  final String id, title, priceINR, priceUSD, features, planValidity, planType;
+  SubscriptionPlan(
+      {this.title,
+      this.id,
+      this.features,
+      this.planType,
+      this.planValidity,
+      this.priceINR,
+      this.priceUSD});
 }

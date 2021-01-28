@@ -59,6 +59,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         text: "Account",
                         icon: Icons.account_circle,
                         onTap: () {
+                          widget.scaffoldKey.currentState.openEndDrawer();
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -75,6 +76,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 text: "E-Paper Plans",
                 icon: Icons.alternate_email,
                 onTap: () {
+                  widget.scaffoldKey.currentState.openEndDrawer();
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => EPaperPlans()));
                 }),
