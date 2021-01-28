@@ -70,8 +70,11 @@ class _HomeState extends State<Home> {
     Orientation orientation = MediaQuery.of(context).orientation;
     return Scaffold(
         key: _scaffoldKey,
-        drawer: CustomDrawer(),
+        drawer: CustomDrawer(
+          scaffoldKey: _scaffoldKey,
+        ),
         appBar: AppBar(
+          elevation: 0,
           title: Text(
             "Home",
             style: TextStyle(
@@ -102,8 +105,8 @@ class _HomeState extends State<Home> {
                 padding: EdgeInsets.all(5),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: orientation == Orientation.portrait ? 1 : 2,
-                    crossAxisSpacing: 3,
-                    mainAxisSpacing: 3,
+                    crossAxisSpacing: 5,
+                    mainAxisSpacing: 5,
                     childAspectRatio: size.width /
                         (orientation == Orientation.portrait ? 400 : 500)),
                 itemBuilder: (BuildContext context, int index) {
@@ -171,10 +174,12 @@ class _HomeState extends State<Home> {
                           height: 5,
                         ),
                         Container(
-                          height: orientation == Orientation.portrait ? 50 : 30,
+                          height: orientation == Orientation.portrait ? 50 : 40,
                           width: orientation == Orientation.portrait
                               ? size.width * 0.8
-                              : size.width * 0.5,
+                              : size.width * 0.3 > 100
+                                  ? size.width * 0.3
+                                  : 100,
                           child: FlatButton(
                             child: Text(
                               "Read Now",
