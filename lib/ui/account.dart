@@ -142,10 +142,12 @@ class _ManageAccountState extends State<ManageAccount> {
             image: image != null
                 ? DecorationImage(image: FileImage(image))
                 : userdata.profileImage != null
-                    ? DecorationImage(
-                        image: NetworkImage(
-                            Urls.assetBaseUrl + userdata.profileImage),
-                        fit: BoxFit.cover)
+                    ? userdata.profileImage.isNotEmpty
+                        ? DecorationImage(
+                            image: NetworkImage(
+                                Urls.assetBaseUrl + userdata.profileImage),
+                            fit: BoxFit.cover)
+                        : null
                     : null),
         child: image == null && userdata.profileImage == null
             ? Icon(Icons.add_a_photo_outlined)
