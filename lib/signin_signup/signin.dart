@@ -1,14 +1,18 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
-import 'signup.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../main/home.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:e_paper/constant/colors.dart';
+import 'package:e_paper/constant/global.dart';
+import 'package:e_paper/main.dart';
+import 'package:e_paper/ui/home.dart';
 import 'package:flutter/animation.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../services/services.dart';
-import 'dart:io';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../services/services.dart';
+import 'signup.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -16,47 +20,29 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
-  bool isPlaying = false, showProgress = false;
+  bool showProgress = false;
   Animation animation;
   AnimationController controller;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String username, password;
   FToast fToast;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  void checkConnection() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty);
-    } on SocketException catch (_) {
-      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("No internet connection !!!")));
-      setState(() {
-        showProgress = false;
-      });
-    }
+  setLoading(bool status) {
+    setState(() {
+      showProgress = status;
+    });
   }
 
   @override
   void initState() {
-    getCredential().then((value) {
-      if(value){
-        checkConnection();
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Home()), (route) => false);
-      }
-    });
-    checkConnection();
+    checkConnection(scaffoldKey: _scaffoldKey);
     super.initState();
-    controller = AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
+    controller = AnimationController(
+        duration: const Duration(milliseconds: 500), vsync: this);
     fToast = FToast();
     fToast.init(context);
   }
-  Future<bool> getCredential() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    if(pref.getString("username") != null && pref.getString("password") != null){
-      return true;
-    } else {
-      return false;
-    }
-  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -80,60 +66,35 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                   width: orientation == Orientation.portrait ? 150 : 100,
                   fit: BoxFit.fill,
                 ),
-                Container(
-                  width: size.width * 0.8,
-                  height: 60,
-                  margin: EdgeInsets.only(top: orientation == Orientation.portrait ? 20 : 10),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(60), borderSide: BorderSide(color: Colors.black38,),),
-                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(60), borderSide: BorderSide(color: Colors.green,),),
-                      hintText: "Username",
-                      hintStyle: TextStyle(
-                        fontSize: 16,
-                      ),
-                      contentPadding: EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 15),
-                      prefixIcon: Icon(Icons.person, color: Colors.black38,),
-                    ),
-                    cursorColor: Colors.black,
-                    onChanged: (value){
+                SizedBox(
+                  height: 20,
+                ),
+                input(
+                    context: context,
+                    hintText: "Username",
+                    iconData: Icons.person,
+                    onChanged: (value) {
                       setState(() {
                         username = value;
                       });
                     },
-                    validator: (value){
-                      if(value.length <= 0)
-                        return null;
-                      return null;
-                    },
-                  ),
-                ),
-                Container(
-                  width: size.width * 0.8,
-                  height: 60,
-                  margin: EdgeInsets.only(top: 5),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(60), borderSide: BorderSide(color: Colors.black38,),),
-                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(60), borderSide: BorderSide(color: Colors.green,),),
-                      hintText: "Password",
-                      hintStyle: TextStyle(
-                        fontSize: 16,
-                      ),
-                      contentPadding: EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 15),
-                      prefixIcon: Icon(Icons.lock, color: Colors.black38,),
-                    ),
-                    cursorColor: Colors.black,
-                    onChanged: (value){
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.emailAddress),
+                input(
+                    context: context,
+                    hintText: "Password",
+                    iconData: Icons.lock,
+                    obscureText: true,
+                    onChanged: (value) {
                       setState(() {
                         password = value;
                       });
                     },
-                    obscureText: true,
-                  ),
-                ),
+                    textInputAction: TextInputAction.done,
+                    onEditingComplete: _login),
                 Container(
-                  margin: EdgeInsets.only(top: orientation == Orientation.portrait ? 25 : 15),
+                  margin: EdgeInsets.only(
+                      top: orientation == Orientation.portrait ? 25 : 15),
                   width: size.width * 0.8,
                   height: 50,
                   child: FlatButton(
@@ -144,52 +105,18 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                         ? SizedBox(
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(primaryColor),
                             ),
                             height: 25,
                             width: 25,
                           )
-                        : Text("LOGIN TO YOUR ACCOUNT",
-                        style: TextStyle(
-                            color: Colors.white
-                        ),
-                    ),
-                    onPressed: !showProgress ? () async{
-                      if(_formKey.currentState.validate()){
-                        if(username != null && password != null){
-                          setState(() {
-                            showProgress = !showProgress;
-                          });
-                          FormData body = FormData.fromMap({
-                            'username' : username,
-                            'password' : password
-                          });
-                          await Services.signIn(body).then((data) async {
-                            if(data.response == 1){
-                              SharedPreferences pref = await SharedPreferences.getInstance();
-                              await pref.setString("username", username);
-                              await pref.setString("password", password);
-                              getCredential().then((value) {
-                                if(value){
-                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Home()), (route) => false);
-                                }
-                              });
-                            } else {
-                              setState(() {
-                                showProgress = false;
-                              });
-                              Fluttertoast.showToast(msg: data.message.toString(), gravity: ToastGravity.BOTTOM);
-                            }
-                          });
-                        } else {
-                          setState(() {
-                            showProgress = false;
-                          });
-                          Fluttertoast.showToast(msg: "Please Enter Username and Password", gravity: ToastGravity.BOTTOM);
-                        }
-                      }
-                    } : null,
-                    color: Colors.green,
+                        : Text(
+                            "LOGIN TO YOUR ACCOUNT",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                    onPressed: !showProgress ? _login : null,
+                    color: primaryColor,
                   ),
                 ),
                 Container(
@@ -198,56 +125,48 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                   child: RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(
-                        text: "NOTE : This app is only for reading purpose. To purchase subscription please visit \t",
-                        style: TextStyle(
-                            color: Colors.blue
-                        ),
+                        text:
+                            "NOTE : This app is only for reading purpose. To purchase subscription please visit \t",
+                        style: TextStyle(color: primaryColor),
                         children: [
                           WidgetSpan(
                               child: InkWell(
-                                child: Text("www.vishvasyavrutantam.com",
-                                  style: TextStyle(
-                                      color: Colors.blue,
-                                      decoration: TextDecoration.underline
-                                  ),
-                                ),
-                                onTap: (){
-
-                                },
-                              )
-                          )
-                        ]
-                    ),
+                            child: Text(
+                              "www.vishvasyavrutantam.com",
+                              style: TextStyle(
+                                  color: primaryColor,
+                                  decoration: TextDecoration.underline),
+                            ),
+                            onTap: () {},
+                          ))
+                        ]),
                   ),
                 ),
-                Container(
-                  width: size.width,
-                  padding: EdgeInsets.only(bottom: 20),
-                  alignment: Alignment.center,
-                  child: RichText(
-                    text: TextSpan(children: [
-                      TextSpan(
-                          text: "New to Visvasya Vrutantam",
-                          style: GoogleFonts.actor(
-                            color: Colors.black54,
-                          )),
-                      WidgetSpan(
-                        alignment: PlaceholderAlignment.middle,
-                        child: InkWell(
-                          child: Text("\tSignUp",
-                              style: GoogleFonts.actor(
-                                  color: Colors.black,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold
-                              )),
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
-                          },
-                        ),
-                      )
-                    ]),
-                  ),
-                ),
+                RichText(
+                  text: TextSpan(children: [
+                    TextSpan(
+                        text: "New to Visvasya Vrutantam",
+                        style: GoogleFonts.actor(
+                          color: Colors.black54,
+                        )),
+                    WidgetSpan(
+                      alignment: PlaceholderAlignment.middle,
+                      child: InkWell(
+                        child: Text("\tSignUp",
+                            style: GoogleFonts.actor(
+                                color: primaryColor,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold)),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SignUp()));
+                        },
+                      ),
+                    )
+                  ]),
+                )
               ],
             ),
           ),
@@ -255,4 +174,91 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
       ),
     );
   }
+
+  _login() async {
+    FocusScope.of(context).unfocus();
+    if (_formKey.currentState.validate()) {
+      if (username != null && password != null) {
+        setLoading(true);
+        FormData body =
+            FormData.fromMap({'username': username, 'password': password});
+        await Services.signIn(body).then((data) async {
+          if (data.response) {
+            await sharedPreferences.setString(Params.userName, username);
+            await sharedPreferences.setString(Params.password, password);
+            await sharedPreferences
+                .setString(Params.userData, jsonEncode(data.data))
+                .then((value) async {
+              await setUserdata();
+            });
+            if (userdata != null) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home()),
+                  (route) => false);
+              setLoading(false);
+            }
+          } else {
+            setLoading(false);
+            Fluttertoast.showToast(
+                msg: data.message, gravity: ToastGravity.BOTTOM);
+          }
+        });
+      } else {
+        setLoading(false);
+        Fluttertoast.showToast(
+            msg: "Please Enter Username and Password",
+            gravity: ToastGravity.BOTTOM);
+      }
+    }
+  }
+}
+
+Widget input(
+    {@required BuildContext context,
+    ValueChanged<String> onChanged,
+    VoidCallback onEditingComplete,
+    bool obscureText = false,
+    String hintText,
+    IconData iconData,
+    TextInputType keyboardType,
+    TextInputAction textInputAction}) {
+  Size size = MediaQuery.of(context).size;
+  return Container(
+    width: size.width * 0.8,
+    height: 60,
+    margin: EdgeInsets.only(top: 5),
+    child: TextFormField(
+      decoration: InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(60),
+          borderSide: BorderSide(
+            color: Colors.black38,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(60),
+          borderSide: BorderSide(
+            color: primaryColor,
+          ),
+        ),
+        hintText: hintText,
+        hintStyle: TextStyle(
+          fontSize: 16,
+        ),
+        contentPadding:
+            EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 15),
+        prefixIcon: Icon(
+          iconData,
+          color: primaryColor,
+        ),
+      ),
+      cursorColor: primaryColor,
+      onChanged: onChanged,
+      onEditingComplete: onEditingComplete,
+      keyboardType: keyboardType,
+      textInputAction: textInputAction,
+      obscureText: obscureText,
+    ),
+  );
 }

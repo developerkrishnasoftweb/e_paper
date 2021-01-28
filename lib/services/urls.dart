@@ -1,6 +1,7 @@
-class Urls{
-  static String baseUrl = "http://newspaper.nirvanacreators.com/";
-  static String signIn = "api/login";
-  static String signUp = "api/register";
-  static String ePaper = "api/epaper";
+class Urls {
+  static String assetBaseUrl = "http://newspaper.nirvanacreators.com/";
+  static String baseUrl = "http://newspaper.nirvanacreators.com/api/";
+  static String signIn = "login";
+  static String signUp = "register";
+  static String ePaper = "news";
 }

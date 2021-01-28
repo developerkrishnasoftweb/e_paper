@@ -1,43 +1,49 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:dio/dio.dart' as dio;
-import '../services/urls.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+
 import '../services/data.dart';
+import '../services/urls.dart';
 
-class Services{
-  static Future<Data> signIn(body) async{
+class Services {
+  static Data noInternetConnection =
+      Data(message: "No internet connection !!!", response: false, data: null);
+  static Data somethingWentWrong =
+      Data(message: "Something went wrong", response: false, data: null);
+
+  static Future<Data> signIn(body) async {
     String url = Urls.baseUrl + Urls.signIn;
-    try{
-      dio.Response response;
-      response = await dio.Dio().post(url, data: body);
-      if(response.statusCode == 200){
-        Data data = Data();
-        final jsonResponse = jsonDecode(response.data);
-        data.message = jsonResponse["message"];
-        data.response = jsonResponse["status"];
-        data.data = jsonResponse["data"];
-        return data;
-      }
+    try {
+      dio.Response response = await dio.Dio().post(url, data: body);
+      if (response.statusCode == 200)
+        return Data(
+            data: [response.data["data"]],
+            message: response.data["message"],
+            response: response.data["status"]);
       return null;
     } on dio.DioError catch (e) {
-      if(dio.DioErrorType.DEFAULT == e.type){
-        Data data = Data(message: "No internet connection !!!", response: null, data: null);
-        return data;
+      if (e.type == dio.DioErrorType.DEFAULT &&
+          e.error.runtimeType == SocketException) {
+        return noInternetConnection;
       } else {
-        Data data = Data(message: e.toString(), response: null, data: null);
-        return data;
+        return somethingWentWrong;
       }
     } catch (e) {
-      Data data = Data(message: e.toString(), response: null, data: null);
-      return data;
+      print(e);
+      return somethingWentWrong;
     }
   }
-  static Future<Data> signUp(body) async{
+
+  static Future<Data> signUp(body) async {
     String url = Urls.baseUrl + Urls.signUp;
-    try{
+    try {
       dio.Response response;
       response = await dio.Dio().post(url, data: body);
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         Data data = Data();
         final jsonResponse = jsonDecode(response.data);
         data.message = jsonResponse["message"];
@@ -46,46 +52,42 @@ class Services{
         return data;
       }
       return null;
-    } on dio.DioError catch (e) {
-      if(dio.DioErrorType.DEFAULT == e.type){
-        Data data = Data(message: "No internet connection !!!", response: null, data: null);
-        return data;
-      } else {
-        Data data = Data(message: e.toString(), response: null, data: null);
-        return data;
-      }
+    } on SocketException catch (_) {
+      return noInternetConnection;
     } catch (e) {
-      Data data = Data(message: e.toString(), response: null, data: null);
-      return data;
+      return somethingWentWrong;
     }
   }
 
-
-  static Future<Data> getFeed() async{
+  static Future<Data> getFeed() async {
     String url = Urls.baseUrl + Urls.ePaper;
-    try{
-      dio.Response response;
-      response = await dio.Dio().get(url);
-      if(response.statusCode == 200){
-        Data data = Data();
-        final jsonResponse = jsonDecode(response.data);
-        data.message = jsonResponse["message"];
-        data.response = jsonResponse["status"];
-        data.data = jsonResponse["data"];
-        return data;
+    try {
+      dio.Response response = await dio.Dio().get(url);
+      if (response.statusCode == 200) {
+        return Data(
+            response: response.data["status"],
+            message: response.data["message"],
+            data: [response.data["data"]]);
       }
       return null;
     } on dio.DioError catch (e) {
-      if(dio.DioErrorType.DEFAULT == e.type){
-        Data data = Data(message: "No internet connection !!!", response: null, data: null);
-        return data;
+      if (e.type == dio.DioErrorType.DEFAULT &&
+          e.error.runtimeType == SocketException) {
+        return noInternetConnection;
       } else {
-        Data data = Data(message: e.toString(), response: null, data: null);
-        return data;
+        return somethingWentWrong;
       }
     } catch (e) {
-      Data data = Data(message: e.toString(), response: null, data: null);
-      return data;
+      print(e);
+      return somethingWentWrong;
     }
+  }
+
+  static Future<String> loadPDF({@required String pdfFile}) async {
+    var response = await http.get(Urls.assetBaseUrl + pdfFile);
+    var dir = await getTemporaryDirectory();
+    File file = new File(dir.path + "/data.pdf");
+    var data = await file.writeAsBytes(response.bodyBytes, flush: true);
+    return file.path;
   }
 }

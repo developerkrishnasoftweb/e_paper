@@ -1,14 +1,15 @@
 import 'dart:io';
 import 'dart:ui';
+
 import 'package:dio/dio.dart';
 import 'package:e_paper/services/services.dart';
-import '../static/customtoast.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'signin.dart';
+import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter/animation.dart';
+
+import 'signin.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -26,9 +27,10 @@ class _SignUp extends State<SignUp> {
   void checkConnection() async {
     try {
       final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty);
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) ;
     } on SocketException catch (_) {
-      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("No internet connection !!!")));
+      _scaffoldKey.currentState
+          .showSnackBar(SnackBar(content: Text("No internet connection !!!")));
     }
   }
 
@@ -347,72 +349,102 @@ class _SignUp extends State<SignUp> {
                             isPressed = !isPressed;
                             _isButtonDisabled = !_isButtonDisabled;
                           });
-                          if(username != "" && username != null) {
-                            RegExp regExp = new RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)');
-                            if(regExp.hasMatch(mobileNo)){
-                              if(mobileNo != "" && mobileNo != null){
-                                RegExp regExp = new RegExp(r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
-                                if(regExp.hasMatch(email)){
-                                  if(email != "" && email != null){
-                                    if(password != "" && password != null){
-                                      if(confirmPassword != "" && confirmPassword != null){
-                                        if(password == confirmPassword){
+                          if (username != "" && username != null) {
+                            RegExp regExp =
+                                new RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)');
+                            if (regExp.hasMatch(mobileNo)) {
+                              if (mobileNo != "" && mobileNo != null) {
+                                RegExp regExp = new RegExp(
+                                    r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
+                                if (regExp.hasMatch(email)) {
+                                  if (email != "" && email != null) {
+                                    if (password != "" && password != null) {
+                                      if (confirmPassword != "" &&
+                                          confirmPassword != null) {
+                                        if (password == confirmPassword) {
                                           register();
                                         } else {
                                           setState(() {
                                             isPressed = !isPressed;
-                                            _isButtonDisabled = !_isButtonDisabled;
+                                            _isButtonDisabled =
+                                                !_isButtonDisabled;
                                           });
-                                          _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Password Doesn't Match."),));
+                                          _scaffoldKey.currentState
+                                              .showSnackBar(SnackBar(
+                                            content:
+                                                Text("Password Doesn't Match."),
+                                          ));
                                         }
                                       } else {
                                         setState(() {
                                           isPressed = !isPressed;
-                                          _isButtonDisabled = !_isButtonDisabled;
+                                          _isButtonDisabled =
+                                              !_isButtonDisabled;
                                         });
-                                        _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Password Doesn't Match."),));
+                                        _scaffoldKey.currentState
+                                            .showSnackBar(SnackBar(
+                                          content:
+                                              Text("Password Doesn't Match."),
+                                        ));
                                       }
                                     } else {
                                       setState(() {
                                         isPressed = !isPressed;
                                         _isButtonDisabled = !_isButtonDisabled;
                                       });
-                                      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Please Enter Password."),));
+                                      _scaffoldKey.currentState
+                                          .showSnackBar(SnackBar(
+                                        content: Text("Please Enter Password."),
+                                      ));
                                     }
                                   } else {
                                     setState(() {
                                       isPressed = !isPressed;
                                       _isButtonDisabled = !_isButtonDisabled;
                                     });
-                                    _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Please Enter Email Id."),));
+                                    _scaffoldKey.currentState
+                                        .showSnackBar(SnackBar(
+                                      content: Text("Please Enter Email Id."),
+                                    ));
                                   }
                                 } else {
                                   setState(() {
                                     isPressed = !isPressed;
                                     _isButtonDisabled = !_isButtonDisabled;
                                   });
-                                  _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Please Enter Valid Email Id."),));
+                                  _scaffoldKey.currentState
+                                      .showSnackBar(SnackBar(
+                                    content:
+                                        Text("Please Enter Valid Email Id."),
+                                  ));
                                 }
                               } else {
                                 setState(() {
                                   isPressed = !isPressed;
                                   _isButtonDisabled = !_isButtonDisabled;
                                 });
-                                _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Please Enter Phone Number."),));
+                                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                  content: Text("Please Enter Phone Number."),
+                                ));
                               }
                             } else {
                               setState(() {
                                 isPressed = !isPressed;
                                 _isButtonDisabled = !_isButtonDisabled;
                               });
-                              _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Please Enter Valid Phone Number."),));
+                              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                content:
+                                    Text("Please Enter Valid Phone Number."),
+                              ));
                             }
                           } else {
                             setState(() {
                               isPressed = !isPressed;
                               _isButtonDisabled = !_isButtonDisabled;
                             });
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Please Enter Username."),));
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                              content: Text("Please Enter Username."),
+                            ));
                           }
                         },
                 ),
@@ -430,18 +462,20 @@ class _SignUp extends State<SignUp> {
                         )),
                     WidgetSpan(
                       alignment: PlaceholderAlignment.middle,
-                        child: InkWell(
-                          child: Text("\tSignIn",
+                      child: InkWell(
+                        child: Text("\tSignIn",
                             style: GoogleFonts.actor(
-                              color: Colors.black,
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold
-                            )),
-                          onTap: (){
-                            Navigator.pop(context);
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => SignIn()));
-                          },
-                        ),
+                                color: Colors.black,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold)),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SignIn()));
+                        },
+                      ),
                     )
                   ]),
                 ),
@@ -455,23 +489,30 @@ class _SignUp extends State<SignUp> {
 
   void register() async {
     FormData formData = FormData.fromMap({
-      "username" : username,
-      "email" : email,
-      "contact" : mobileNo,
-      "refer_code" : refCode,
-      "con_password" : confirmPassword,
-      "password" : password,
+      "username": username,
+      "email": email,
+      "contact": mobileNo,
+      "refer_code": refCode,
+      "con_password": confirmPassword,
+      "password": password,
     });
     await Services.signUp(formData).then((value) {
       setState(() {
         isPressed = !isPressed;
         _isButtonDisabled = !_isButtonDisabled;
       });
-      if(value.response == "1" || value.response == 1){
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignIn()), (route) => false);
-        Fluttertoast.showToast(msg: value.message, gravity: ToastGravity.BOTTOM, toastLength: Toast.LENGTH_LONG);
+      if (value.response == "1" || value.response == 1) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => SignIn()),
+            (route) => false);
+        Fluttertoast.showToast(
+            msg: value.message,
+            gravity: ToastGravity.BOTTOM,
+            toastLength: Toast.LENGTH_LONG);
       } else {
-        Fluttertoast.showToast(msg: value.message, gravity: ToastGravity.BOTTOM);
+        Fluttertoast.showToast(
+            msg: value.message, gravity: ToastGravity.BOTTOM);
       }
     });
   }
