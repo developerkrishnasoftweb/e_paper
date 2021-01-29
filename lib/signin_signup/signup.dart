@@ -41,26 +41,29 @@ class _SignUp extends State<SignUp> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            SizedBox(
-              height: 50,
-            ),
-            Image(
-              image: AssetImage("assets/images/logo.gif"),
-              height: orientation == Orientation.portrait ? 150 : 100,
-              width: orientation == Orientation.portrait ? 150 : 100,
-              fit: BoxFit.fill,
-            ),
-            Container(
-              width: size.width,
-              padding: EdgeInsets.symmetric(
-                  horizontal: size.width * 0.1, vertical: 10),
-              child: Text(
-                "Welcome",
-                style: TextStyle(
-                    color: Colors.black38,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                icon: Icon(Icons.arrow_back_ios_rounded),
+                onPressed: () {},
+                splashRadius: 25,
               ),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Text(
+                  "Welcome",
+                  style: TextStyle(
+                      color: primaryColor,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
             ),
             input(
                 context: context,
@@ -92,10 +95,8 @@ class _SignUp extends State<SignUp> {
                 style: TextStyle(fontSize: 19),
                 decoration: InputDecoration(border: border()),
                 text: "Confirm Password"),
-            Container(
-              width: size.width,
-              padding: EdgeInsets.symmetric(
-                  horizontal: size.width * 0.12, vertical: 10),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 10),
               child: RichText(
                 text: TextSpan(children: [
                   WidgetSpan(

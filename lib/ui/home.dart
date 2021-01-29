@@ -123,8 +123,15 @@ class _HomeState extends State<Home> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
-                          child: Image.network(
-                            Urls.assetBaseUrl + feedData[index].previewImage,
+                          child: Image(
+                            width: orientation == Orientation.portrait
+                                ? size.width * 0.8
+                                : size.width * 0.3,
+                            image: feedData[index].previewImage != null
+                                ? NetworkImage(Urls.assetBaseUrl +
+                                    feedData[index].previewImage)
+                                : AssetImage("assets/images/icon.png"),
+                            fit: BoxFit.fill,
                             loadingBuilder: (BuildContext context,
                                 Widget widget, ImageChunkEvent event) {
                               return event != null
@@ -139,37 +146,35 @@ class _HomeState extends State<Home> {
                           ),
                         ),
                         SizedBox(
-                          height: 5,
+                          height: 2,
                         ),
                         RichText(
                           textAlign: TextAlign.center,
                           text: TextSpan(children: [
                             WidgetSpan(
-                              child: Icon(
-                                Icons.calendar_today,
-                                size: 15,
-                                color: primarySwatch[500],
-                              ),
-                            ),
+                                child: Icon(
+                                  Icons.calendar_today,
+                                  size: 20,
+                                  color: primarySwatch[500],
+                                ),
+                                alignment: PlaceholderAlignment.middle),
                             TextSpan(
-                                text: "\t" + feedData[index].createdAt,
-                                style: TextStyle(color: primarySwatch[500]))
+                                text: "\t" +
+                                    feedData[index].createdAt.split(" ").first,
+                                style: TextStyle(
+                                    color: primarySwatch[500],
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold))
                           ]),
                         ),
                         SizedBox(
-                          height: 5,
+                          height: 2,
                         ),
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(children: [
-                            TextSpan(
-                                text: "Vishvasya Vrutantam",
-                                style: TextStyle(color: primarySwatch[500])),
-                            TextSpan(
-                                text: "\t Dt. \t" + feedData[index].createdAt,
-                                style: TextStyle(color: primarySwatch[500]))
-                          ]),
-                        ),
+                        Text("Vishvasya Vrutantam",
+                            style: TextStyle(
+                                color: primarySwatch[500],
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15)),
                         SizedBox(
                           height: 5,
                         ),
@@ -184,8 +189,9 @@ class _HomeState extends State<Home> {
                             child: Text(
                               "Read Now",
                               style: TextStyle(
-                                color: primaryColor,
-                              ),
+                                  color: primaryColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
                             ),
                             color: Colors.transparent,
                             shape: RoundedRectangleBorder(

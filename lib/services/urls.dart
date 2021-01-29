@@ -6,4 +6,5 @@ class Urls {
   static String ePaper = "news";
   static String getSubscription = "subscription_plan";
   static String isAvailable = "profile/is-available";
+  static String updateProfile = "profile/update";
 }

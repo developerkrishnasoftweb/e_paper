@@ -60,6 +60,27 @@ class Services {
     }
   }
 
+  static Future<Data> update(body) async {
+    String url = Urls.baseUrl + Urls.updateProfile;
+    try {
+      dio.Response response;
+      response = await dio.Dio().post(url, data: body);
+      if (response.statusCode == 200) {
+        Data data = Data();
+        final jsonResponse = jsonDecode(response.data);
+        data.message = jsonResponse["message"];
+        data.response = jsonResponse["status"];
+        data.data = jsonResponse["data"];
+        return data;
+      }
+      return null;
+    } on SocketException catch (_) {
+      return noInternetConnection;
+    } catch (e) {
+      return somethingWentWrong;
+    }
+  }
+
   static Future<Data> isAvailable({String mobile, String email}) async {
     String url = Urls.baseUrl + Urls.isAvailable;
     try {

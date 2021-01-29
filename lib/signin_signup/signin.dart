@@ -50,7 +50,8 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
         width: size.width,
         alignment: Alignment.center,
         child: SingleChildScrollView(
-          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+          padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top, bottom: 20),
           physics: BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,

@@ -17,10 +17,16 @@ class ManageAccount extends StatefulWidget {
 
 class _ManageAccountState extends State<ManageAccount> {
   TextEditingController firstName, lastName, email, mobile;
-  bool isLoading = false;
+  bool isLoading = false, isRegistered = false;
   EdgeInsetsGeometry padding =
       EdgeInsets.symmetric(horizontal: 10, vertical: 15);
   File image;
+
+  setRegistered(bool status) {
+    setState(() {
+      isRegistered = status;
+    });
+  }
 
   setLoading(bool status) {
     setState(() {
@@ -105,7 +111,13 @@ class _ManageAccountState extends State<ManageAccount> {
     );
   }
 
-  _update() async {}
+  _update() async {
+    if (firstName.text.isNotEmpty &&
+        lastName.text.isNotEmpty &&
+        email.text.isNotEmpty &&
+        mobile.text.isNotEmpty &&
+        isRegistered) {}
+  }
 
   Future getImage() async {
     File result = await FilePicker.getFile(type: FileType.image);
@@ -151,6 +163,8 @@ class _ManageAccountState extends State<ManageAccount> {
           showToastMessage(value.message);
           setLoading(false);
         } else {
+          showToastMessage(value.message);
+          setRegistered(true);
           setLoading(false);
         }
       });
@@ -167,6 +181,8 @@ class _ManageAccountState extends State<ManageAccount> {
           showToastMessage(value.message);
           setLoading(false);
         } else {
+          showToastMessage(value.message);
+          setRegistered(true);
           setLoading(false);
         }
       });
