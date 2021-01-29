@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:e_paper/constant/global.dart';
+import 'package:e_paper/main.dart';
 import 'package:e_paper/services/services.dart';
 import 'package:e_paper/services/urls.dart';
 import 'package:e_paper/static/input.dart';
@@ -17,16 +20,10 @@ class ManageAccount extends StatefulWidget {
 
 class _ManageAccountState extends State<ManageAccount> {
   TextEditingController firstName, lastName, email, mobile;
-  bool isLoading = false, isRegistered = false;
+  bool isLoading = false;
   EdgeInsetsGeometry padding =
       EdgeInsets.symmetric(horizontal: 10, vertical: 15);
   File image;
-
-  setRegistered(bool status) {
-    setState(() {
-      isRegistered = status;
-    });
-  }
 
   setLoading(bool status) {
     setState(() {
@@ -115,8 +112,32 @@ class _ManageAccountState extends State<ManageAccount> {
     if (firstName.text.isNotEmpty &&
         lastName.text.isNotEmpty &&
         email.text.isNotEmpty &&
-        mobile.text.isNotEmpty &&
-        isRegistered) {}
+        mobile.text.isNotEmpty) {
+      setLoading(true);
+      FormData formData = FormData.fromMap({
+        "id": userdata.id,
+        "first_name": firstName.text,
+        "last_name": lastName.text,
+        "email": email.text,
+        "mobile": mobile.text,
+        "profile_image": image != null
+            ? await MultipartFile.fromFile(image.path,
+                filename: image.path.split("/").last)
+            : null
+      });
+      Services.update(formData).then((value) async {
+        if (value.response) {
+          await sharedPreferences.setString(
+              Params.userData, jsonEncode(value.data));
+          await setUserdata();
+          showToastMessage(value.message);
+          setLoading(false);
+        } else {
+          showToastMessage(value.message);
+          setLoading(false);
+        }
+      });
+    }
   }
 
   Future getImage() async {
@@ -159,12 +180,10 @@ class _ManageAccountState extends State<ManageAccount> {
     if (RegExp(r"^(?:[+0]9)?[0-9]{10}$").hasMatch(value)) {
       setLoading(true);
       await Services.isAvailable(mobile: value).then((value) {
-        if (!value.response) {
-          showToastMessage(value.message);
+        if (value.response) {
           setLoading(false);
         } else {
           showToastMessage(value.message);
-          setRegistered(true);
           setLoading(false);
         }
       });
@@ -177,12 +196,10 @@ class _ManageAccountState extends State<ManageAccount> {
         .hasMatch(value)) {
       setLoading(true);
       await Services.isAvailable(email: value).then((value) {
-        if (!value.response) {
-          showToastMessage(value.message);
+        if (value.response) {
           setLoading(false);
         } else {
           showToastMessage(value.message);
-          setRegistered(true);
           setLoading(false);
         }
       });
