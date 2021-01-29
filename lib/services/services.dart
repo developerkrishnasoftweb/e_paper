@@ -62,15 +62,13 @@ class Services {
   static Future<Data> update(body) async {
     String url = Urls.baseUrl + Urls.updateProfile;
     try {
-      print(url);
       dio.Response response = await dio.Dio().post(url, data: body);
       print(response);
       if (response.statusCode == 200) {
         Data data = Data();
-        final jsonResponse = jsonDecode(response.data);
-        data.message = jsonResponse["message"];
-        data.response = jsonResponse["status"];
-        data.data = jsonResponse["data"];
+        data.message = response.data["message"];
+        data.response = response.data["status"];
+        data.data = [response.data["data"]];
         return data;
       }
       return null;

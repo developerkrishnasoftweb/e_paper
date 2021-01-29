@@ -39,6 +39,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           image: NetworkImage(
                               Urls.assetBaseUrl + userdata.profileImage),
                           fit: BoxFit.fill,
+                          loadingBuilder: (BuildContext context, Widget widget,
+                              ImageChunkEvent event) {
+                            return event != null
+                                ? Center(
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 1,
+                                    ),
+                                  )
+                                : widget;
+                          },
                         )
                       : null
                   : null,

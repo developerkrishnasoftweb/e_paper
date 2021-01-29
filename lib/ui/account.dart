@@ -132,6 +132,7 @@ class _ManageAccountState extends State<ManageAccount> {
           await setUserdata();
           showToastMessage(value.message);
           setLoading(false);
+          Navigator.pop(context);
         } else {
           showToastMessage(value.message);
           setLoading(false);
