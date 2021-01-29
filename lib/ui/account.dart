@@ -113,31 +113,43 @@ class _ManageAccountState extends State<ManageAccount> {
         lastName.text.isNotEmpty &&
         email.text.isNotEmpty &&
         mobile.text.isNotEmpty) {
-      setLoading(true);
-      FormData formData = FormData.fromMap({
-        "id": userdata.id,
-        "first_name": firstName.text,
-        "last_name": lastName.text,
-        "email": email.text,
-        "mobile": mobile.text,
-        "profile_image": image != null
-            ? await MultipartFile.fromFile(image.path,
-                filename: image.path.split("/").last)
-            : null
-      });
-      Services.update(formData).then((value) async {
-        if (value.response) {
-          await sharedPreferences.setString(
-              Params.userData, jsonEncode(value.data));
-          await setUserdata();
-          showToastMessage(value.message);
-          setLoading(false);
-          Navigator.pop(context);
+      if (RegExp(
+              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+          .hasMatch(email.text)) {
+        if (RegExp(r"^(?:[+0]9)?[0-9]{10}$").hasMatch(mobile.text)) {
+          setLoading(true);
+          FormData formData = FormData.fromMap({
+            "id": userdata.id,
+            "first_name": firstName.text,
+            "last_name": lastName.text,
+            "email": email.text,
+            "mobile": mobile.text,
+            "profile_image": image != null
+                ? await MultipartFile.fromFile(image.path,
+                    filename: image.path.split("/").last)
+                : null
+          });
+          Services.update(formData).then((value) async {
+            if (value.response) {
+              await sharedPreferences.setString(
+                  Params.userData, jsonEncode(value.data));
+              await setUserdata();
+              showToastMessage(value.message);
+              setLoading(false);
+              Navigator.pop(context);
+            } else {
+              showToastMessage(value.message);
+              setLoading(false);
+            }
+          });
         } else {
-          showToastMessage(value.message);
-          setLoading(false);
+          showToastMessage("Invalid mobile number");
         }
-      });
+      } else {
+        showToastMessage("Invalid email");
+      }
+    } else {
+      showToastMessage("Fields can't be empty");
     }
   }
 
@@ -178,7 +190,8 @@ class _ManageAccountState extends State<ManageAccount> {
   }
 
   _isMobileAvailable(value) async {
-    if (RegExp(r"^(?:[+0]9)?[0-9]{10}$").hasMatch(value)) {
+    if (RegExp(r"^(?:[+0]9)?[0-9]{10}$").hasMatch(value) &&
+        userdata.mobile != value) {
       setLoading(true);
       await Services.isAvailable(mobile: value).then((value) {
         if (value.response) {
