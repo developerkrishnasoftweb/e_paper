@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import '../signin_signup/signin.dart';
 
 class Splash extends StatefulWidget {
+  final Widget widget;
+  Splash({this.widget});
   @override
   _SplashState createState() => _SplashState();
 }
@@ -14,7 +16,7 @@ class _SplashState extends State<Splash> {
     super.initState();
     Future.delayed(Duration(milliseconds: 2000), () {
       Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => SignIn()), (route) => false);
+          MaterialPageRoute(builder: (context) => widget.widget), (route) => false);
     });
   }
 

@@ -114,7 +114,7 @@ class Params {
       password = "password",
       profileImage = "profile_image",
       refCode = "referral_code",
-      subscriptionPlanId = "subscription_plan_id",
+      subscriptionId = "subscription_id",
       userData = "userdata",
       userName = "username";
 }

@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../constant/colors.dart';
+import '../constant/colors.dart';
+import '../constant/global.dart';
 import '../constant/global.dart';
 import '../services/urls.dart';
 import '../ui/account.dart';
@@ -16,6 +19,7 @@ class CustomDrawer extends StatefulWidget {
 
 class _CustomDrawerState extends State<CustomDrawer> {
   bool accountVisibility = false;
+  DateTime currentBackPressTime;
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -89,13 +93,23 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => EPaperPlans()));
                 }),
-            Divider(),
+            Divider(color: primaryColor,),
             _createDrawerItem(
-                text: "Exit", icon: Icons.exit_to_app, onTap: () {}),
+                text: "Exit", icon: Icons.exit_to_app, onTap: _exit),
           ],
         ),
       ),
     );
+  }
+  _exit() {
+    DateTime now = DateTime.now();
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+      currentBackPressTime = now;
+      showToastMessage("Press again to exit");
+      return Future.value(false);
+    }
+    SystemNavigator.pop();
   }
 }
 

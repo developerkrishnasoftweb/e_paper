@@ -6,11 +6,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../constant/colors.dart';
 import '../constant/global.dart';
+import '../constant/global.dart';
+import '../constant/global.dart';
+import '../constant/global.dart';
 import '../services/services.dart';
 import '../services/urls.dart';
 import '../signin_signup/signin.dart';
 import '../static/drawer.dart';
 import '../ui/preview.dart';
+import 'preview.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -110,112 +114,7 @@ class _HomeState extends State<Home> {
                     childAspectRatio: size.width /
                         (orientation == Orientation.portrait ? 400 : 500)),
                 itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(
-                            color: primaryColor,
-                            width: 1.5,
-                            style: BorderStyle.solid)),
-                    padding: EdgeInsets.all(5.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Image(
-                            width: orientation == Orientation.portrait
-                                ? size.width * 0.8
-                                : size.width * 0.3,
-                            image: feedData[index].previewImage != null
-                                ? NetworkImage(Urls.assetBaseUrl +
-                                    feedData[index].previewImage)
-                                : AssetImage("assets/images/icon.png"),
-                            fit: BoxFit.fill,
-                            loadingBuilder: (BuildContext context,
-                                Widget widget, ImageChunkEvent event) {
-                              return event != null
-                                  ? Center(
-                                      child: CircularProgressIndicator(
-                                        valueColor: AlwaysStoppedAnimation(
-                                            primaryColor),
-                                      ),
-                                    )
-                                  : widget;
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          height: 2,
-                        ),
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(children: [
-                            WidgetSpan(
-                                child: Icon(
-                                  Icons.calendar_today,
-                                  size: 20,
-                                  color: primarySwatch[500],
-                                ),
-                                alignment: PlaceholderAlignment.middle),
-                            TextSpan(
-                                text: "\t" +
-                                    feedData[index].createdAt.split(" ").first,
-                                style: TextStyle(
-                                    color: primarySwatch[500],
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold))
-                          ]),
-                        ),
-                        SizedBox(
-                          height: 2,
-                        ),
-                        Text("Vishvasya Vrutantam",
-                            style: TextStyle(
-                                color: primarySwatch[500],
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15)),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Container(
-                          height: orientation == Orientation.portrait ? 50 : 40,
-                          width: orientation == Orientation.portrait
-                              ? size.width * 0.8
-                              : size.width * 0.3 > 100
-                                  ? size.width * 0.3
-                                  : 100,
-                          child: FlatButton(
-                            child: Text(
-                              "Read Now",
-                              style: TextStyle(
-                                  color: primaryColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            color: Colors.transparent,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5),
-                                side: BorderSide(
-                                  color: primaryColor,
-                                  style: BorderStyle.solid,
-                                )),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Preview(
-                                            pdfFile: feedData[index].pdfFile,
-                                          )));
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                      ],
-                    ),
-                  );
+                  return buildCards(context: context, feedData: feedData[index]);
                 },
                 itemCount: feedData.length,
                 controller: ScrollController(keepScrollOffset: true),
@@ -246,4 +145,122 @@ class FeedData {
       this.previewImage,
       this.createdAt,
       this.updatedAt});
+}
+
+Widget buildCards ({@required BuildContext context, @required FeedData feedData}) {
+  Size size = MediaQuery.of(context).size;
+  Orientation orientation = MediaQuery.of(context).orientation;
+  _readPaper () {
+    if(userdata.subscriptionPlanId != null && userdata.subscriptionPlanId != "") {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Preview(pdfFilePath: feedData.pdfFile)));
+    } else {
+      showDialog(context: context, child: AlertDialog(
+        content: Text("You have to become prime member to read newspaper"),
+        actions: [
+          FlatButton(onPressed: (){}, child: Text("Close")),
+          FlatButton(onPressed: (){}, child: Text("Become Prime Member")),
+        ],
+      ));
+    }
+  }
+  return Container(
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        border: Border.all(
+            color: primaryColor,
+            width: 1.5,
+            style: BorderStyle.solid)),
+    padding: EdgeInsets.all(5.0),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Image(
+            width: orientation == Orientation.portrait
+                ? size.width * 0.8
+                : size.width * 0.3,
+            image: feedData.previewImage != null
+                ? NetworkImage(Urls.assetBaseUrl +
+                feedData.previewImage)
+                : AssetImage("assets/images/icon.png"),
+            fit: BoxFit.fill,
+            loadingBuilder: (BuildContext context,
+                Widget widget, ImageChunkEvent event) {
+              return event != null
+                  ? Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(
+                      primaryColor),
+                ),
+              )
+                  : widget;
+            },
+          ),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(children: [
+            WidgetSpan(
+                child: Icon(
+                  Icons.calendar_today,
+                  size: 20,
+                  color: primarySwatch[500],
+                ),
+                alignment: PlaceholderAlignment.middle),
+            TextSpan(
+                text: "\t" +
+                    feedData.createdAt.split(" ").first,
+                style: TextStyle(
+                    color: primarySwatch[500],
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold))
+          ]),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        Text("Vishvasya Vrutantam",
+            style: TextStyle(
+                color: primarySwatch[500],
+                fontWeight: FontWeight.bold,
+                fontSize: 15)),
+        SizedBox(
+          height: 5,
+        ),
+        Container(
+          height: orientation == Orientation.portrait ? 50 : 40,
+          width: orientation == Orientation.portrait
+              ? size.width * 0.8
+              : size.width * 0.3 > 100
+              ? size.width * 0.3
+              : 100,
+          child: FlatButton(
+            child: Text(
+              "Read Now",
+              style: TextStyle(
+                  color: primaryColor,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+            color: Colors.transparent,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+                side: BorderSide(
+                  color: primaryColor,
+                  style: BorderStyle.solid,
+                )),
+            onPressed: _readPaper,
+          ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+      ],
+    ),
+  );
+
 }

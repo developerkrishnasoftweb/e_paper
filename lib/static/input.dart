@@ -43,7 +43,7 @@ Widget input(
           height: text != null ? 5 : 0,
         ),
         Container(
-          height: height,
+          height: height ?? 55,
           child: TextFormField(
             autofocus: autoFocus ?? false,
             maxLines: maxLines ?? 1,

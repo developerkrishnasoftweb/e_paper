@@ -6,6 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import './constant/colors.dart';
 import './constant/global.dart';
+import 'constant/global.dart';
+import 'signin_signup/signin.dart';
+import 'ui/home.dart';
 import 'ui/home.dart';
 import 'ui/splash_screen.dart';
 
@@ -21,7 +24,7 @@ Future<void> main() async {
           visualDensity: VisualDensity.adaptivePlatformDensity,
           fontFamily: "Poppins"),
       debugShowCheckedModeBanner: false,
-      home: status ? Home() : Splash()));
+      home: status ? Splash(widget: Home()) : Splash(widget: SignIn())));
 
   await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
 }
@@ -39,7 +42,7 @@ Future<void> setUserdata() async {
         password: data[0][Params.password],
         profileImage: data[0][Params.profileImage],
         refCode: data[0][Params.refCode],
-        subscriptionPlanId: data[0][Params.subscriptionPlanId]);
+        subscriptionPlanId: data[0][Params.subscriptionId]);
   }
   return;
 }

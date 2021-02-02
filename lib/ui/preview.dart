@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 
 class Preview extends StatefulWidget {
-  final String pdfFile;
-  Preview({@required this.pdfFile}) : assert(pdfFile != null);
+  final String pdfFilePath;
+  Preview({@required this.pdfFilePath}) : assert(pdfFilePath != null);
   @override
   _PreviewState createState() => _PreviewState();
 }
@@ -23,7 +23,7 @@ class _PreviewState extends State<Preview> {
   void initState() {
     super.initState();
     checkConnection(scaffoldKey: _scaffoldKey);
-    Services.loadPDF(pdfFile: widget.pdfFile).then((value) {
+    Services.loadPDF(pdfFile: widget.pdfFilePath).then((value) {
       setState(() {
         _localFile = value;
       });
