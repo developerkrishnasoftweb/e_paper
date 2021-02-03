@@ -154,7 +154,7 @@ Widget buildCards ({@required BuildContext context, @required FeedData feedData}
     if(userdata.subscriptionPlanId != null && userdata.subscriptionPlanId != "") {
       Navigator.push(context, MaterialPageRoute(builder: (context) => Preview(pdfFilePath: feedData.pdfFile)));
     } else {
-      showDialog(context: context, child: AlertDialog(
+      showDialog(context: context, barrierDismissible: true, child: AlertDialog(
         content: Text("You have to become prime member to read newspaper"),
         actions: [
           FlatButton(onPressed: (){}, child: Text("Close")),

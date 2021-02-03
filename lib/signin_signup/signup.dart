@@ -17,11 +17,22 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUp extends State<SignUp> {
-  bool isPressed = false, _isButtonDisabled = false;
-  String username, mobileNo, email, refCode, password, confirmPassword;
+  bool isLoading = false;
+  String firstName = "",
+      lastName = "",
+      mobileNo = "",
+      email = "",
+      refCode = "",
+      password = "",
+      confirmPassword = "";
   Color showPassword = Colors.black54;
-  bool _showPassword = true;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  TextStyle inputTextStyle = TextStyle(fontSize: 16);
+  setLoading(bool status) {
+    setState(() {
+      isLoading = status;
+    });
+  }
 
   @override
   void initState() {
@@ -32,7 +43,6 @@ class _SignUp extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    Orientation orientation = MediaQuery.of(context).orientation;
     return Scaffold(
       key: _scaffoldKey,
       body: SingleChildScrollView(
@@ -67,33 +77,91 @@ class _SignUp extends State<SignUp> {
             ),
             input(
                 context: context,
-                style: TextStyle(fontSize: 19),
-                decoration: InputDecoration(border: border()),
+                style: inputTextStyle,
+                onChanged: (value) {
+                  setState(() {
+                    firstName = value;
+                  });
+                },
+                decoration: InputDecoration(
+                    border: border(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                 text: "First name"),
             input(
                 context: context,
-                style: TextStyle(fontSize: 19),
-                decoration: InputDecoration(border: border()),
+                style: inputTextStyle,
+                onChanged: (value) {
+                  setState(() {
+                    lastName = value;
+                  });
+                },
+                decoration: InputDecoration(
+                    border: border(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                 text: "Last name"),
             input(
                 context: context,
-                style: TextStyle(fontSize: 19),
-                decoration: InputDecoration(border: border()),
+                style: inputTextStyle,
+                onChanged: (value) {
+                  setState(() {
+                    email = value;
+                  });
+                },
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                    border: border(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15)),
+                text: "Email"),
+            input(
+                context: context,
+                style: inputTextStyle,
+                onChanged: (value) {
+                  setState(() {
+                    mobileNo = value;
+                  });
+                },
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                    border: border(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                 text: "Mobile No"),
             input(
                 context: context,
-                style: TextStyle(fontSize: 19),
-                decoration: InputDecoration(border: border()),
+                style: inputTextStyle,
+                onChanged: (value) {
+                  setState(() {
+                    refCode = value;
+                  });
+                },
+                decoration: InputDecoration(
+                    border: border(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                 text: "Refer Code (Optional)"),
             input(
                 context: context,
-                style: TextStyle(fontSize: 19),
-                decoration: InputDecoration(border: border()),
+                style: inputTextStyle,
+                onChanged: (value) {
+                  setState(() {
+                    password = value;
+                  });
+                },
+                obscureText: true,
+                decoration: InputDecoration(
+                    border: border(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                 text: "Password"),
             input(
                 context: context,
-                style: TextStyle(fontSize: 19),
-                decoration: InputDecoration(border: border()),
+                style: inputTextStyle,
+                onChanged: (value) {
+                  setState(() {
+                    confirmPassword = value;
+                  });
+                },
+                obscureText: true,
+                decoration: InputDecoration(
+                    border: border(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                 text: "Confirm Password"),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 10),
@@ -119,130 +187,27 @@ class _SignUp extends State<SignUp> {
               width: size.width - 60,
               margin: EdgeInsets.only(top: 10, bottom: 10),
               child: FlatButton(
-                color: primaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: isPressed
-                    ? SizedBox(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.black),
+                  color: primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: isLoading
+                      ? SizedBox(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                          ),
+                          height: 25,
+                          width: 25,
+                        )
+                      : Text(
+                          "Submit",
+                          style: TextStyle(
+                            fontSize: 17,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        height: 25,
-                        width: 25,
-                      )
-                    : Text(
-                        "Submit",
-                        style: TextStyle(
-                          fontSize: 17,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                onPressed: _isButtonDisabled
-                    ? null
-                    : () {
-                        setState(() {
-                          isPressed = !isPressed;
-                          _isButtonDisabled = !_isButtonDisabled;
-                        });
-                        if (username != "" && username != null) {
-                          RegExp regExp =
-                              new RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)');
-                          if (regExp.hasMatch(mobileNo)) {
-                            if (mobileNo != "" && mobileNo != null) {
-                              RegExp regExp = new RegExp(
-                                  r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
-                              if (regExp.hasMatch(email)) {
-                                if (email != "" && email != null) {
-                                  if (password != "" && password != null) {
-                                    if (confirmPassword != "" &&
-                                        confirmPassword != null) {
-                                      if (password == confirmPassword) {
-                                        register();
-                                      } else {
-                                        setState(() {
-                                          isPressed = !isPressed;
-                                          _isButtonDisabled =
-                                              !_isButtonDisabled;
-                                        });
-                                        _scaffoldKey.currentState
-                                            .showSnackBar(SnackBar(
-                                          content:
-                                              Text("Password Doesn't Match."),
-                                        ));
-                                      }
-                                    } else {
-                                      setState(() {
-                                        isPressed = !isPressed;
-                                        _isButtonDisabled = !_isButtonDisabled;
-                                      });
-                                      _scaffoldKey.currentState
-                                          .showSnackBar(SnackBar(
-                                        content:
-                                            Text("Password Doesn't Match."),
-                                      ));
-                                    }
-                                  } else {
-                                    setState(() {
-                                      isPressed = !isPressed;
-                                      _isButtonDisabled = !_isButtonDisabled;
-                                    });
-                                    _scaffoldKey.currentState
-                                        .showSnackBar(SnackBar(
-                                      content: Text("Please Enter Password."),
-                                    ));
-                                  }
-                                } else {
-                                  setState(() {
-                                    isPressed = !isPressed;
-                                    _isButtonDisabled = !_isButtonDisabled;
-                                  });
-                                  _scaffoldKey.currentState
-                                      .showSnackBar(SnackBar(
-                                    content: Text("Please Enter Email Id."),
-                                  ));
-                                }
-                              } else {
-                                setState(() {
-                                  isPressed = !isPressed;
-                                  _isButtonDisabled = !_isButtonDisabled;
-                                });
-                                _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                  content: Text("Please Enter Valid Email Id."),
-                                ));
-                              }
-                            } else {
-                              setState(() {
-                                isPressed = !isPressed;
-                                _isButtonDisabled = !_isButtonDisabled;
-                              });
-                              _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                content: Text("Please Enter Phone Number."),
-                              ));
-                            }
-                          } else {
-                            setState(() {
-                              isPressed = !isPressed;
-                              _isButtonDisabled = !_isButtonDisabled;
-                            });
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text("Please Enter Valid Phone Number."),
-                            ));
-                          }
-                        } else {
-                          setState(() {
-                            isPressed = !isPressed;
-                            _isButtonDisabled = !_isButtonDisabled;
-                          });
-                          _scaffoldKey.currentState.showSnackBar(SnackBar(
-                            content: Text("Please Enter Username."),
-                          ));
-                        }
-                      },
-              ),
+                  onPressed: isLoading ? null : _signUp),
             ),
             Container(
               width: size.width,
@@ -279,29 +244,60 @@ class _SignUp extends State<SignUp> {
     );
   }
 
-  void register() async {
-    FormData formData = FormData.fromMap({
-      "username": username,
-      "email": email,
-      "contact": mobileNo,
-      "refer_code": refCode,
-      "con_password": confirmPassword,
-      "password": password,
-    });
-    await Services.signUp(formData).then((value) {
-      setState(() {
-        isPressed = !isPressed;
-        _isButtonDisabled = !_isButtonDisabled;
-      });
-      if (value.response == "1" || value.response == 1) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => SignIn()),
-            (route) => false);
-        showToastMessage(value.message);
+  void _signUp() async {
+    if (firstName.isNotEmpty &&
+        lastName.isNotEmpty &&
+        mobileNo.isNotEmpty &&
+        refCode.isNotEmpty &&
+        password.isNotEmpty &&
+        confirmPassword.isNotEmpty &&
+        email.isNotEmpty) {
+      if (password == confirmPassword) {
+        if (password.length >= 6) {
+          if (RegExp(
+                  r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+              .hasMatch(email)) {
+            if (RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)').hasMatch(mobileNo)) {
+              setLoading(true);
+              FormData formData = FormData.fromMap({
+                "first_name": firstName,
+                "last_name": lastName,
+                "email": email,
+                "mobile": mobileNo,
+                "refer_code": refCode,
+                "password": password,
+              });
+              await Services.signUp(formData).then((value) {
+                if (value.response == "1" || value.response == 1) {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SignIn(
+                                username: email,
+                              )),
+                      (route) => false);
+                  showToastMessage(value.message);
+                  setLoading(false);
+                } else {
+                  setLoading(false);
+                  showToastMessage(value.message);
+                }
+              });
+              setLoading(false);
+            } else {
+              showToastMessage("Invalid mobile number");
+            }
+          } else {
+            showToastMessage("Invalid email");
+          }
+        } else {
+          showToastMessage("Password must be of six character");
+        }
       } else {
-        showToastMessage(value.message);
+        showToastMessage("Password doesn't match");
       }
-    });
+    } else {
+      showToastMessage("Fields can't be empty");
+    }
   }
 }

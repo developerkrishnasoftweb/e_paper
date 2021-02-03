@@ -41,8 +41,10 @@ class Services {
 
   static Future<Data> signUp(body) async {
     String url = Urls.baseUrl + Urls.signUp;
+    print(url);
     try {
       dio.Response response = await dio.Dio().post(url, data: body);
+      print(response);
       if (response.statusCode == 200) {
         Data data = Data();
         final jsonResponse = jsonDecode(response.data);

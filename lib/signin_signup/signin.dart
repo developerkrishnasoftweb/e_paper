@@ -34,7 +34,6 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    checkConnection(scaffoldKey: _scaffoldKey);
     username = TextEditingController(text: widget.username);
     password = TextEditingController();
   }

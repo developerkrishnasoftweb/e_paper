@@ -24,7 +24,7 @@ Widget input(
     int maxLines}) {
   Size size = MediaQuery.of(context).size;
   return Container(
-    margin: margin ?? const EdgeInsets.all(10),
+    margin: margin ?? const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
     width: width ?? size.width,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
