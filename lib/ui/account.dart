@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:e_paper/constant/global.dart';
-import 'package:e_paper/main.dart';
-import 'package:e_paper/services/services.dart';
-import 'package:e_paper/services/urls.dart';
-import 'package:e_paper/static/input.dart';
+import '../constant/global.dart';
+import '../main.dart';
+import '../services/services.dart';
+import '../services/urls.dart';
+import '../static/input.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,12 +31,14 @@ class _ManageAccountState extends State<ManageAccount> {
       isLoading = status;
     });
   }
+
   setError(bool status) {
     setState(() {
       error = status;
     });
   }
-  setErrorMessage (String message) {
+
+  setErrorMessage(String message) {
     setState(() {
       errorMessage = message;
     });
@@ -92,27 +94,35 @@ class _ManageAccountState extends State<ManageAccount> {
                 width: size.width * 0.9,
                 text: "First name",
                 controller: firstName,
-                decoration: InputDecoration(border: border(), contentPadding: EdgeInsets.symmetric(horizontal: 15))),
+                decoration: InputDecoration(
+                    border: border(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15))),
             input(
                 context: context,
                 width: size.width * 0.9,
                 text: "Last name",
                 controller: lastName,
-                decoration: InputDecoration(border: border(), contentPadding: EdgeInsets.symmetric(horizontal: 15))),
+                decoration: InputDecoration(
+                    border: border(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15))),
             input(
                 context: context,
                 width: size.width * 0.9,
                 text: "Email",
                 controller: email,
                 onChanged: _isEmailAvailable,
-                decoration: InputDecoration(border: border(), contentPadding: EdgeInsets.symmetric(horizontal: 15))),
+                decoration: InputDecoration(
+                    border: border(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15))),
             input(
                 context: context,
                 width: size.width * 0.9,
                 text: "Mobile",
                 controller: mobile,
                 onChanged: _isMobileAvailable,
-                decoration: InputDecoration(border: border(), contentPadding: EdgeInsets.symmetric(horizontal: 15))),
+                decoration: InputDecoration(
+                    border: border(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15))),
           ],
         ),
       ),
@@ -120,13 +130,13 @@ class _ManageAccountState extends State<ManageAccount> {
   }
 
   _update() async {
-    if(!error) {
+    if (!error) {
       if (firstName.text.isNotEmpty &&
           lastName.text.isNotEmpty &&
           email.text.isNotEmpty &&
           mobile.text.isNotEmpty) {
         if (RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
             .hasMatch(email.text)) {
           if (RegExp(r"^(?:[+0]9)?[0-9]{10}$").hasMatch(mobile.text)) {
             setLoading(true);
@@ -138,7 +148,7 @@ class _ManageAccountState extends State<ManageAccount> {
               "mobile": mobile.text,
               "profile_image": image != null
                   ? await MultipartFile.fromFile(image.path,
-                  filename: image.path.split("/").last)
+                      filename: image.path.split("/").last)
                   : null
             });
             Services.update(formData).then((value) async {
@@ -205,7 +215,7 @@ class _ManageAccountState extends State<ManageAccount> {
   }
 
   _isMobileAvailable(value) async {
-    if(userdata.mobile != value) {
+    if (userdata.mobile != value) {
       if (RegExp(r"^(?:[+0]9)?[0-9]{10}$").hasMatch(value) &&
           userdata.mobile != value) {
         setLoading(true);
@@ -226,9 +236,9 @@ class _ManageAccountState extends State<ManageAccount> {
   }
 
   _isEmailAvailable(value) async {
-    if(userdata.email != value) {
+    if (userdata.email != value) {
       if (RegExp(
-          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
           .hasMatch(value)) {
         setLoading(true);
         await Services.isAvailable(email: value).then((value) {

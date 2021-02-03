@@ -1,8 +1,7 @@
 import 'dart:ui';
 
-import 'package:e_paper/constant/colors.dart';
-import 'package:e_paper/constant/global.dart';
-import 'package:e_paper/services/services.dart';
+import '../constant/colors.dart';
+import '../services/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
@@ -22,7 +21,6 @@ class _PreviewState extends State<Preview> {
   @override
   void initState() {
     super.initState();
-    checkConnection(scaffoldKey: _scaffoldKey);
     Services.loadPDF(pdfFile: widget.pdfFilePath).then((value) {
       setState(() {
         _localFile = value;

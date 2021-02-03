@@ -1,11 +1,10 @@
 import 'dart:ui';
 
-import 'package:e_paper/services/services.dart';
+import '../services/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../constant/colors.dart';
-import '../constant/global.dart';
 
 class EPaperPlans extends StatefulWidget {
   @override
@@ -41,7 +40,6 @@ class _EPaperPlansState extends State<EPaperPlans> {
 
   @override
   Widget build(BuildContext context) {
-    checkConnection(scaffoldKey: _scaffoldKey);
     Size size = MediaQuery.of(context).size;
     Orientation orientation = MediaQuery.of(context).orientation;
     return Scaffold(

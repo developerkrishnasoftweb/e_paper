@@ -1,14 +1,11 @@
 import 'dart:ui';
 
-import 'package:e_paper/ui/e_paper_plans.dart';
+import '../ui/e_paper_plans.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../constant/colors.dart';
-import '../constant/global.dart';
-import '../constant/global.dart';
-import '../constant/global.dart';
 import '../constant/global.dart';
 import '../services/services.dart';
 import '../services/urls.dart';

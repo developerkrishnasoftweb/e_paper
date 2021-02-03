@@ -1,9 +1,8 @@
 import 'dart:ui';
 
 import 'package:dio/dio.dart';
-import 'package:e_paper/constant/colors.dart';
-import 'package:e_paper/static/input.dart';
-import 'package:flutter/animation.dart';
+import '../constant/colors.dart';
+import '../static/input.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -37,7 +36,6 @@ class _SignUp extends State<SignUp> {
   @override
   void initState() {
     super.initState();
-    checkConnection(scaffoldKey: _scaffoldKey);
   }
 
   @override

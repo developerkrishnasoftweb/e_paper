@@ -9,7 +9,6 @@ import './constant/global.dart';
 import 'constant/global.dart';
 import 'signin_signup/signin.dart';
 import 'ui/home.dart';
-import 'ui/home.dart';
 import 'ui/splash_screen.dart';
 
 Future<void> main() async {

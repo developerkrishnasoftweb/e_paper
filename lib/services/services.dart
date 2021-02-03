@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart' as dio;
@@ -11,9 +10,9 @@ import '../services/data.dart';
 import '../services/urls.dart';
 
 class Services {
-  static Data noInternetConnection =
+  static Data internetError =
       Data(message: "No internet connection !!!", response: false, data: null);
-  static Data somethingWentWrong =
+  static Data dataError =
       Data(message: "Something went wrong", response: false, data: null);
 
   static Future<Data> signIn(body) async {
@@ -27,15 +26,14 @@ class Services {
             response: response.data["status"]);
       return null;
     } on dio.DioError catch (e) {
-      if (e.type == dio.DioErrorType.DEFAULT &&
+      if (dio.DioErrorType.DEFAULT == e.type &&
           e.error.runtimeType == SocketException) {
-        return noInternetConnection;
+        return internetError;
       } else {
-        return somethingWentWrong;
+        return dataError;
       }
     } catch (e) {
-      print(e);
-      return somethingWentWrong;
+      return dataError;
     }
   }
 
@@ -56,10 +54,15 @@ class Services {
             response: response.data["status"]);
       }
       return null;
-    } on SocketException catch (_) {
-      return noInternetConnection;
+    } on dio.DioError catch (e) {
+      if (dio.DioErrorType.DEFAULT == e.type &&
+          e.error.runtimeType == SocketException) {
+        return internetError;
+      } else {
+        return dataError;
+      }
     } catch (e) {
-      return somethingWentWrong;
+      return dataError;
     }
   }
 
@@ -81,10 +84,15 @@ class Services {
             response: response.data["status"]);
       }
       return null;
-    } on SocketException catch (_) {
-      return noInternetConnection;
+    } on dio.DioError catch (e) {
+      if (dio.DioErrorType.DEFAULT == e.type &&
+          e.error.runtimeType == SocketException) {
+        return internetError;
+      } else {
+        return dataError;
+      }
     } catch (e) {
-      return somethingWentWrong;
+      return dataError;
     }
   }
 
@@ -102,10 +110,15 @@ class Services {
             response: response.data["status"]);
       }
       return null;
-    } on SocketException catch (_) {
-      return noInternetConnection;
+    } on dio.DioError catch (e) {
+      if (dio.DioErrorType.DEFAULT == e.type &&
+          e.error.runtimeType == SocketException) {
+        return internetError;
+      } else {
+        return dataError;
+      }
     } catch (e) {
-      return somethingWentWrong;
+      return dataError;
     }
   }
 
@@ -121,15 +134,14 @@ class Services {
       }
       return null;
     } on dio.DioError catch (e) {
-      if (e.type == dio.DioErrorType.DEFAULT &&
+      if (dio.DioErrorType.DEFAULT == e.type &&
           e.error.runtimeType == SocketException) {
-        return noInternetConnection;
+        return internetError;
       } else {
-        return somethingWentWrong;
+        return dataError;
       }
     } catch (e) {
-      print(e);
-      return somethingWentWrong;
+      return dataError;
     }
   }
 
@@ -145,15 +157,14 @@ class Services {
       }
       return null;
     } on dio.DioError catch (e) {
-      if (e.type == dio.DioErrorType.DEFAULT &&
+      if (dio.DioErrorType.DEFAULT == e.type &&
           e.error.runtimeType == SocketException) {
-        return noInternetConnection;
+        return internetError;
       } else {
-        return somethingWentWrong;
+        return dataError;
       }
     } catch (e) {
-      print(e);
-      return somethingWentWrong;
+      return dataError;
     }
   }
 

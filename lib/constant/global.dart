@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -6,16 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 SharedPreferences sharedPreferences;
 Userdata userdata;
-
-Future<void> checkConnection({GlobalKey<ScaffoldState> scaffoldKey}) async {
-  try {
-    final result = await InternetAddress.lookup('google.com');
-    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) ;
-  } on SocketException catch (_) {
-    scaffoldKey.currentState
-        .showSnackBar(SnackBar(content: Text("No internet connection !!!")));
-  }
-}
 
 Future<bool> showToastMessage(String msg,
     {Toast toast,
