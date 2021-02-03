@@ -41,17 +41,19 @@ class Services {
 
   static Future<Data> signUp(body) async {
     String url = Urls.baseUrl + Urls.signUp;
-    print(url);
     try {
       dio.Response response = await dio.Dio().post(url, data: body);
-      print(response);
       if (response.statusCode == 200) {
-        Data data = Data();
-        final jsonResponse = jsonDecode(response.data);
-        data.message = jsonResponse["message"];
-        data.response = jsonResponse["status"];
-        data.data = jsonResponse["data"];
-        return data;
+        return Data(
+            data: [response.data["data"]],
+            message: (response.data["message"].runtimeType == String
+                ? response.data["message"]
+                : response.data["message"]["email"] != null
+                    ? response.data["message"]["email"]
+                    : (response.data["message"]["mobile"] != null
+                        ? response.data["message"]["mobile"]
+                        : response.data["message"])),
+            response: response.data["status"]);
       }
       return null;
     } on SocketException catch (_) {

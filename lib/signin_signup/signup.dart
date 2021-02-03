@@ -268,7 +268,7 @@ class _SignUp extends State<SignUp> {
                 "password": password,
               });
               await Services.signUp(formData).then((value) {
-                if (value.response == "1" || value.response == 1) {
+                if (value.response) {
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
