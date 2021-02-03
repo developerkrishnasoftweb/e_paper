@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:e_paper/ui/e_paper_plans.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -155,10 +156,14 @@ Widget buildCards ({@required BuildContext context, @required FeedData feedData}
       Navigator.push(context, MaterialPageRoute(builder: (context) => Preview(pdfFilePath: feedData.pdfFile)));
     } else {
       showDialog(context: context, barrierDismissible: true, child: AlertDialog(
+        title: Text("Vishvasya Vrutantam", style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),),
         content: Text("You have to become prime member to read newspaper"),
         actions: [
-          FlatButton(onPressed: (){}, child: Text("Close")),
-          FlatButton(onPressed: (){}, child: Text("Become Prime Member")),
+          FlatButton(onPressed: () => Navigator.pop(context), child: Text("Close", style: TextStyle(color: Colors.black),)),
+          FlatButton(onPressed: () {
+            Navigator.pop(context);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => EPaperPlans()));
+          }, child: Text("Become Prime Member")),
         ],
       ));
     }

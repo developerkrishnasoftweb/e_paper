@@ -37,6 +37,12 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
     username = TextEditingController(text: widget.username);
     password = TextEditingController();
   }
+  @override
+  void dispose() {
+    super.dispose();
+    username.dispose();
+    password.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

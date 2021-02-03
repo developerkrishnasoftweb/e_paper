@@ -20,7 +20,8 @@ class ManageAccount extends StatefulWidget {
 
 class _ManageAccountState extends State<ManageAccount> {
   TextEditingController firstName, lastName, email, mobile;
-  bool isLoading = false;
+  bool isLoading = false, error = false;
+  String errorMessage = "";
   EdgeInsetsGeometry padding =
       EdgeInsets.symmetric(horizontal: 10, vertical: 15);
   File image;
@@ -28,6 +29,16 @@ class _ManageAccountState extends State<ManageAccount> {
   setLoading(bool status) {
     setState(() {
       isLoading = status;
+    });
+  }
+  setError(bool status) {
+    setState(() {
+      error = status;
+    });
+  }
+  setErrorMessage (String message) {
+    setState(() {
+      errorMessage = message;
     });
   }
 
@@ -109,47 +120,51 @@ class _ManageAccountState extends State<ManageAccount> {
   }
 
   _update() async {
-    if (firstName.text.isNotEmpty &&
-        lastName.text.isNotEmpty &&
-        email.text.isNotEmpty &&
-        mobile.text.isNotEmpty) {
-      if (RegExp(
-              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-          .hasMatch(email.text)) {
-        if (RegExp(r"^(?:[+0]9)?[0-9]{10}$").hasMatch(mobile.text)) {
-          setLoading(true);
-          FormData formData = FormData.fromMap({
-            "id": userdata.id,
-            "first_name": firstName.text,
-            "last_name": lastName.text,
-            "email": email.text,
-            "mobile": mobile.text,
-            "profile_image": image != null
-                ? await MultipartFile.fromFile(image.path,
-                    filename: image.path.split("/").last)
-                : null
-          });
-          Services.update(formData).then((value) async {
-            if (value.response) {
-              await sharedPreferences.setString(
-                  Params.userData, jsonEncode(value.data));
-              await setUserdata();
-              showToastMessage(value.message);
-              setLoading(false);
-              Navigator.pop(context);
-            } else {
-              showToastMessage(value.message);
-              setLoading(false);
-            }
-          });
+    if(!error) {
+      if (firstName.text.isNotEmpty &&
+          lastName.text.isNotEmpty &&
+          email.text.isNotEmpty &&
+          mobile.text.isNotEmpty) {
+        if (RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+            .hasMatch(email.text)) {
+          if (RegExp(r"^(?:[+0]9)?[0-9]{10}$").hasMatch(mobile.text)) {
+            setLoading(true);
+            FormData formData = FormData.fromMap({
+              "id": userdata.id,
+              "first_name": firstName.text,
+              "last_name": lastName.text,
+              "email": email.text,
+              "mobile": mobile.text,
+              "profile_image": image != null
+                  ? await MultipartFile.fromFile(image.path,
+                  filename: image.path.split("/").last)
+                  : null
+            });
+            Services.update(formData).then((value) async {
+              if (value.response) {
+                await sharedPreferences.setString(
+                    Params.userData, jsonEncode(value.data));
+                await setUserdata();
+                showToastMessage(value.message);
+                setLoading(false);
+                Navigator.pop(context);
+              } else {
+                showToastMessage(value.message);
+                setLoading(false);
+              }
+            });
+          } else {
+            showToastMessage("Invalid mobile number");
+          }
         } else {
-          showToastMessage("Invalid mobile number");
+          showToastMessage("Invalid email");
         }
       } else {
-        showToastMessage("Invalid email");
+        showToastMessage("Fields can't be empty");
       }
     } else {
-      showToastMessage("Fields can't be empty");
+      showToastMessage(errorMessage);
     }
   }
 
@@ -190,33 +205,45 @@ class _ManageAccountState extends State<ManageAccount> {
   }
 
   _isMobileAvailable(value) async {
-    if (RegExp(r"^(?:[+0]9)?[0-9]{10}$").hasMatch(value) &&
-        userdata.mobile != value) {
-      setLoading(true);
-      await Services.isAvailable(mobile: value).then((value) {
-        if (value.response) {
-          setLoading(false);
-        } else {
-          showToastMessage(value.message);
-          setLoading(false);
-        }
-      });
+    if(userdata.mobile != value) {
+      if (RegExp(r"^(?:[+0]9)?[0-9]{10}$").hasMatch(value) &&
+          userdata.mobile != value) {
+        setLoading(true);
+        await Services.isAvailable(mobile: value).then((value) {
+          if (value.response) {
+            setLoading(false);
+            setError(false);
+            setErrorMessage("");
+          } else {
+            setError(true);
+            showToastMessage(value.message);
+            setLoading(false);
+            setErrorMessage(value.message.toString());
+          }
+        });
+      }
     }
   }
 
   _isEmailAvailable(value) async {
-    if (RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(value)) {
-      setLoading(true);
-      await Services.isAvailable(email: value).then((value) {
-        if (value.response) {
-          setLoading(false);
-        } else {
-          showToastMessage(value.message);
-          setLoading(false);
-        }
-      });
+    if(userdata.email != value) {
+      if (RegExp(
+          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+          .hasMatch(value)) {
+        setLoading(true);
+        await Services.isAvailable(email: value).then((value) {
+          if (value.response) {
+            setLoading(false);
+            setError(false);
+            setErrorMessage("");
+          } else {
+            showToastMessage(value.message);
+            setLoading(false);
+            setError(true);
+            setErrorMessage(value.message.toString());
+          }
+        });
+      }
     }
   }
 }
