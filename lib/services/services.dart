@@ -11,7 +11,7 @@ import '../services/urls.dart';
 
 class Services {
   static Data internetError =
-      Data(message: "No internet connection !!!", response: false, data: null);
+      Data(message: "No internet connection", response: false, data: null);
   static Data dataError =
       Data(message: "Something went wrong", response: false, data: null);
 

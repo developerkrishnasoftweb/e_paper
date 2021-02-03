@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import './constant/colors.dart';
-import './constant/global.dart';
+import 'constant/colors.dart';
 import 'constant/global.dart';
 import 'signin_signup/signin.dart';
 import 'ui/home.dart';
