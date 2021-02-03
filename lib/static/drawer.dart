@@ -95,21 +95,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 }),
             Divider(color: primaryColor,),
             _createDrawerItem(
-                text: "Exit", icon: Icons.exit_to_app, onTap: _exit),
+                text: "Exit", icon: Icons.exit_to_app, onTap: () => SystemNavigator.pop()),
           ],
         ),
       ),
     );
-  }
-  _exit() {
-    DateTime now = DateTime.now();
-    if (currentBackPressTime == null ||
-        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
-      currentBackPressTime = now;
-      showToastMessage("Press again to exit");
-      return Future.value(false);
-    }
-    SystemNavigator.pop();
   }
 }
 

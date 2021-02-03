@@ -22,6 +22,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<FeedData> feedData = [];
+  DateTime currentBackPressTime;
   @override
   void initState() {
     super.initState();
@@ -70,7 +71,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     Orientation orientation = MediaQuery.of(context).orientation;
-    return Scaffold(
+    return WillPopScope(child: Scaffold(
         key: _scaffoldKey,
         drawer: CustomDrawer(
           scaffoldKey: _scaffoldKey,
@@ -103,27 +104,37 @@ class _HomeState extends State<Home> {
         ),
         body: feedData.length > 0
             ? GridView.builder(
-                physics: BouncingScrollPhysics(),
-                padding: EdgeInsets.all(5),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: orientation == Orientation.portrait ? 1 : 2,
-                    crossAxisSpacing: 5,
-                    mainAxisSpacing: 5,
-                    childAspectRatio: size.width /
-                        (orientation == Orientation.portrait ? 400 : 500)),
-                itemBuilder: (BuildContext context, int index) {
-                  return buildCards(context: context, feedData: feedData[index]);
-                },
-                itemCount: feedData.length,
-                controller: ScrollController(keepScrollOffset: true),
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-              )
+          physics: BouncingScrollPhysics(),
+          padding: EdgeInsets.all(5),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: orientation == Orientation.portrait ? 1 : 2,
+              crossAxisSpacing: 5,
+              mainAxisSpacing: 5,
+              childAspectRatio: size.width /
+                  (orientation == Orientation.portrait ? 400 : 500)),
+          itemBuilder: (BuildContext context, int index) {
+            return buildCards(context: context, feedData: feedData[index]);
+          },
+          itemCount: feedData.length,
+          controller: ScrollController(keepScrollOffset: true),
+          shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+        )
             : Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(primaryColor),
-                ),
-              ));
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation(primaryColor),
+          ),
+        )), onWillPop: _exit);
+  }
+  Future<bool> _exit() async {
+    DateTime now = DateTime.now();
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+      currentBackPressTime = now;
+      showToastMessage("Press again to exit");
+      return Future.value(false);
+    }
+    return Future.value(true);
   }
 }
 
