@@ -177,8 +177,6 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
           {'username': username.text, 'password': password.text});
       await Services.signIn(body).then((data) async {
         if (data.response) {
-          await sharedPreferences.setString(Params.userName, username.text);
-          await sharedPreferences.setString(Params.password, password.text);
           await sharedPreferences
               .setString(Params.userData, jsonEncode(data.data))
               .then((value) async {

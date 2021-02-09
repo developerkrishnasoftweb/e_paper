@@ -52,7 +52,7 @@ class _HomeState extends State<Home> {
 
   _logout() async {
     loader(context: context, text: "Logging out ...");
-    String email = sharedPreferences.getString(Params.userName);
+    String email = userdata.email;
     userdata = null;
     sharedPreferences.clear().then((value) {
       if (value) {

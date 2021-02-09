@@ -1,10 +1,12 @@
 
+import 'package:e_paper/ui/config.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SharedPreferences sharedPreferences;
 Userdata userdata;
+Config config;
 
 Future<bool> showToastMessage(String msg,
     {Toast toast,
@@ -105,7 +107,7 @@ class Params {
       refCode = "referral_code",
       subscriptionId = "subscription_id",
       userData = "userdata",
-      userName = "username";
+      config = "config";
 }
 
 class Userdata {

@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart' as dio;
 import 'package:dio/dio.dart';
+import 'package:e_paper/constant/global.dart';
+import 'package:e_paper/ui/config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -142,6 +145,43 @@ class Services {
       }
     } catch (e) {
       return dataError;
+    }
+  }
+
+  static Future<Data> subscribe(body) async {
+    String url = Urls.baseUrl + Urls.subscribe;
+    try {
+      dio.Response response = await dio.Dio().get(url);
+      print(response);
+      if (response.statusCode == 200) {
+        return Data(
+            response: response.data["status"],
+            message: response.data["message"],
+            data: [response.data["data"]]);
+      }
+      return null;
+    } on dio.DioError catch (e) {
+      if (dio.DioErrorType.DEFAULT == e.type &&
+          e.error.runtimeType == SocketException) {
+        return internetError;
+      } else {
+        return dataError;
+      }
+    } catch (e) {
+      return dataError;
+    }
+  }
+
+  static Future<void> config() async {
+    String url = Urls.baseUrl + Urls.config;
+    try {
+      dio.Response response = await dio.Dio().get(url);
+      if (response.statusCode == 200) {
+        await sharedPreferences.setString(Params.config, jsonEncode(response.data["data"]));
+      }
+      return null;
+    } catch (e) {
+      return null;
     }
   }
 

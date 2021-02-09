@@ -1,5 +1,10 @@
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
+import 'package:e_paper/constant/global.dart';
+import 'package:e_paper/services/urls.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+
 import '../services/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,11 +19,16 @@ class EPaperPlans extends StatefulWidget {
 class _EPaperPlansState extends State<EPaperPlans> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<SubscriptionPlan> plans = [];
+  Razorpay _razorpay;
 
   @override
   void initState() {
     super.initState();
     getSubscriptionPlans();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
   getSubscriptionPlans() async {
@@ -36,6 +46,37 @@ class _EPaperPlansState extends State<EPaperPlans> {
         });
       }
     });
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async {
+    print("Calling subscribe API");
+    print(response.orderId);
+
+    FormData formData = FormData.fromMap({
+      "payment_id": response.paymentId,
+    });
+    Services.subscribe(formData).then((value) {
+      if (value.response) {
+        print(value.data);
+        showToastMessage(value.message);
+      } else {
+        showToastMessage(value.message);
+      }
+    });
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    showToastMessage("Payment Failed");
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    showToastMessage("Something went wrong");
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _razorpay.clear();
   }
 
   @override
@@ -175,7 +216,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
                               side: BorderSide(color: primaryColor)),
-                          onPressed: () {},
+                          onPressed: () => _buy(plans[index]),
                           child: Text(
                             "Buy Now",
                             style: TextStyle(color: primaryColor, fontSize: 18),
@@ -197,6 +238,25 @@ class _EPaperPlansState extends State<EPaperPlans> {
             )
           : Center(child: CircularProgressIndicator()),
     );
+  }
+  _buy (SubscriptionPlan plan) async {
+    var options = {
+      'key': config.razorpayApiKey,
+      'amount': double.parse(plan.priceINR) * 100,
+      'name': 'Vishvasya Vrutantam',
+      'description': 'Subscription Plan',
+      'image': Urls.assetBaseUrl + config.logo,
+      'prefill': {'contact': userdata.mobile, 'email': userdata.email},
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+    print(options);
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint(e);
+    }
   }
 }
 

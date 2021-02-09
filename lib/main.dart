@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:e_paper/services/services.dart';
+import 'package:e_paper/ui/config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +16,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   sharedPreferences = await SharedPreferences.getInstance();
   bool status = await getCredential();
+  await Services.config().then((value) {
+    config = Config.fromJson(jsonDecode(sharedPreferences.getString(Params.config)));
+  });
   if (status) await setUserdata();
   runApp(MaterialApp(
       title: 'E Paper',
