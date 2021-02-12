@@ -154,8 +154,16 @@ class Services {
   static Future<Data> checkPlanValidity() async {
     String url = Urls.baseUrl + Urls.checkPlanValidity;
     try {
-      dio.Response response = await dio.Dio().get(url);
+      dio.Response response = await dio.Dio().post(url,
+          data: dio.FormData.fromMap(
+              {"subscription_id": userdata.subscriptionPlanId}));
       if (response.statusCode == 200) {
+        if(response.data['status']) {
+          List data = await jsonDecode(sharedPreferences.getString(Params.userData));
+          print(data.runtimeType);
+        } else {
+          print(response.data['message']);
+        }
         return Data(
             response: response.data["status"],
             message: response.data["message"],

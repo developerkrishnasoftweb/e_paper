@@ -20,6 +20,7 @@ Future<void> main() async {
     config = Config.fromJson(jsonDecode(sharedPreferences.getString(Params.config)));
   });
   if (status) await setUserdata();
+  if (status) await Services.checkPlanValidity();
   runApp(MaterialApp(
       title: 'E Paper',
       theme: ThemeData(

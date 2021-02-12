@@ -103,10 +103,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
             Divider(
               color: primaryColor,
             ),
-            _createDrawerItem(
+            /* _createDrawerItem(
                 text: "Exit",
                 icon: Icons.exit_to_app,
-                onTap: () => SystemNavigator.pop()),
+                onTap: () => SystemNavigator.pop()),*/
           ],
         ),
       ),
