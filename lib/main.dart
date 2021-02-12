@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:e_paper/services/services.dart';
-import 'package:e_paper/ui/config.dart';
+import 'file:///C:/Users/sai/Projects/e_paper/lib/constant/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,6 +39,7 @@ Future<void> setUserdata() async {
     userdata = Userdata(
         email: data[0][Params.email],
         firstName: data[0][Params.firstName],
+        username: data[0][Params.username],
         id: data[0][Params.id],
         lastName: data[0][Params.lastName],
         mobile: data[0][Params.mobile],
@@ -51,9 +52,7 @@ Future<void> setUserdata() async {
 }
 
 Future<bool> getCredential() async {
-  if (sharedPreferences.getString("username") != null &&
-      sharedPreferences.getString("password") != null &&
-      sharedPreferences.getString(Params.userData) != null) {
+  if (sharedPreferences.getString(Params.userData) != null) {
     return true;
   } else {
     return false;

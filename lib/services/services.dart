@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart' as dio;
 import 'package:dio/dio.dart';
 import 'package:e_paper/constant/global.dart';
-import 'package:e_paper/ui/config.dart';
+import 'file:///C:/Users/sai/Projects/e_paper/lib/constant/models.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -73,17 +73,18 @@ class Services {
     String url = Urls.baseUrl + Urls.updateProfile;
     try {
       dio.Response response = await dio.Dio().post(url, data: body);
-      print(response);
       if (response.statusCode == 200) {
         return Data(
             data: [response.data["data"]],
             message: (response.data["message"].runtimeType == String
                 ? response.data["message"]
                 : response.data["message"]["email"] != null
-                ? response.data["message"]["email"]
-                : (response.data["message"]["mobile"] != null
-                ? response.data["message"]["mobile"]
-                : response.data["message"])),
+                    ? response.data["message"]["email"]
+                    : (response.data["message"]["mobile"] != null
+                        ? response.data["message"]["mobile"]
+                        : response.data["message"]["username"] != null
+                            ? response.data["message"]["username"]
+                            : response.data["message"])),
             response: response.data["status"]);
       }
       return null;
@@ -152,7 +153,6 @@ class Services {
     String url = Urls.baseUrl + Urls.subscribe;
     try {
       dio.Response response = await dio.Dio().get(url);
-      print(response);
       if (response.statusCode == 200) {
         return Data(
             response: response.data["status"],
@@ -177,7 +177,8 @@ class Services {
     try {
       dio.Response response = await dio.Dio().get(url);
       if (response.statusCode == 200) {
-        await sharedPreferences.setString(Params.config, jsonEncode(response.data["data"]));
+        await sharedPreferences.setString(
+            Params.config, jsonEncode(response.data["data"]));
       }
       return null;
     } catch (e) {

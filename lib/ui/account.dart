@@ -19,7 +19,7 @@ class ManageAccount extends StatefulWidget {
 }
 
 class _ManageAccountState extends State<ManageAccount> {
-  TextEditingController firstName, lastName, email, mobile;
+  TextEditingController firstName, lastName, email, mobile, username;
   bool isLoading = false, error = false;
   String errorMessage = "";
   EdgeInsetsGeometry padding =
@@ -55,6 +55,7 @@ class _ManageAccountState extends State<ManageAccount> {
     lastName = TextEditingController(text: userdata.lastName);
     email = TextEditingController(text: userdata.email);
     mobile = TextEditingController(text: userdata.mobile);
+    username = TextEditingController(text: userdata.username);
   }
 
   @override
@@ -89,6 +90,14 @@ class _ManageAccountState extends State<ManageAccount> {
         child: Column(
           children: [
             profileImage(),
+            input(
+                context: context,
+                width: size.width * 0.9,
+                text: "User name",
+                controller: username,
+                decoration: InputDecoration(
+                    border: border(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15))),
             input(
                 context: context,
                 width: size.width * 0.9,
@@ -134,7 +143,8 @@ class _ManageAccountState extends State<ManageAccount> {
       if (firstName.text.isNotEmpty &&
           lastName.text.isNotEmpty &&
           email.text.isNotEmpty &&
-          mobile.text.isNotEmpty) {
+          mobile.text.isNotEmpty &&
+          username.text.isNotEmpty) {
         if (RegExp(
                 r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
             .hasMatch(email.text)) {
@@ -142,6 +152,7 @@ class _ManageAccountState extends State<ManageAccount> {
             setLoading(true);
             FormData formData = FormData.fromMap({
               "id": userdata.id,
+              "username" : username.text,
               "first_name": firstName.text,
               "last_name": lastName.text,
               "email": email.text,

@@ -1,5 +1,4 @@
-
-import 'package:e_paper/ui/config.dart';
+import 'file:///C:/Users/sai/Projects/e_paper/lib/constant/models.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -98,6 +97,7 @@ Future<void> loader(
 
 class Params {
   static String id = "id",
+      username = "username",
       firstName = "first_name",
       lastName = "last_name",
       email = "email",
@@ -110,24 +110,3 @@ class Params {
       config = "config";
 }
 
-class Userdata {
-  final String id,
-      firstName,
-      lastName,
-      email,
-      mobile,
-      password,
-      profileImage,
-      refCode,
-      subscriptionPlanId;
-  Userdata(
-      {this.id,
-      this.mobile,
-      this.password,
-      this.email,
-      this.lastName,
-      this.firstName,
-      this.profileImage,
-      this.refCode,
-      this.subscriptionPlanId});
-}

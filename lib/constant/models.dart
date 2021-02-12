@@ -62,3 +62,27 @@ class Config {
     this.googleClientId = json["google_client_id"];
   }
 }
+
+class Userdata {
+  final String id,
+      username,
+      firstName,
+      lastName,
+      email,
+      mobile,
+      password,
+      profileImage,
+      refCode,
+      subscriptionPlanId;
+  Userdata(
+      {this.id,
+        this.username,
+        this.mobile,
+        this.password,
+        this.email,
+        this.lastName,
+        this.firstName,
+        this.profileImage,
+        this.refCode,
+        this.subscriptionPlanId});
+}
