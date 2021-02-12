@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:e_paper/services/services.dart';
 import 'file:///C:/Users/sai/Projects/e_paper/lib/constant/models.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +17,11 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   sharedPreferences = await SharedPreferences.getInstance();
   bool status = await getCredential();
-  await Services.config().then((value) {
-    config = Config.fromJson(jsonDecode(sharedPreferences.getString(Params.config)));
+  await Services.config().then((value) async {
+    config = Config.fromJson(await jsonDecode(sharedPreferences.getString(Params.config)));
   });
   if (status) await setUserdata();
+  if (status) await Services.getUserData();
   if (status) await Services.checkPlanValidity();
   runApp(MaterialApp(
       title: 'E Paper',

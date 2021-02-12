@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart' as dio;
 import 'package:dio/dio.dart';
 import 'package:e_paper/constant/global.dart';
+import 'package:e_paper/main.dart';
 import 'file:///C:/Users/sai/Projects/e_paper/lib/constant/models.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -27,6 +28,33 @@ class Services {
             data: [response.data["data"]],
             message: response.data["message"],
             response: response.data["status"]);
+      return null;
+    } on dio.DioError catch (e) {
+      if (dio.DioErrorType.DEFAULT == e.type &&
+          e.error.runtimeType == SocketException) {
+        return internetError;
+      } else {
+        return dataError;
+      }
+    } catch (e) {
+      return dataError;
+    }
+  }
+
+  static Future<Data> getUserData() async {
+    String url = Urls.baseUrl + Urls.getUser;
+    try {
+      dio.Response response = await dio.Dio()
+          .post(url, data: dio.FormData.fromMap({"user_id": userdata.id}));
+      if (response.statusCode == 200) {
+        await sharedPreferences.setString(
+            Params.userData, jsonEncode([response.data["data"]]));
+        await setUserdata();
+        return Data(
+            data: [response.data["data"]],
+            message: response.data["message"],
+            response: response.data["status"]);
+      }
       return null;
     } on dio.DioError catch (e) {
       if (dio.DioErrorType.DEFAULT == e.type &&
@@ -158,11 +186,11 @@ class Services {
           data: dio.FormData.fromMap(
               {"subscription_id": userdata.subscriptionPlanId}));
       if (response.statusCode == 200) {
-        if(response.data['status']) {
-          List data = await jsonDecode(sharedPreferences.getString(Params.userData));
-          print(data.runtimeType);
-        } else {
-          print(response.data['message']);
+        if (!response.data['status']) {
+          if (response.data['data'] != null) {
+            if(response.data["data"]['status'] == "n")
+            await getUserData();
+          }
         }
         return Data(
             response: response.data["status"],
@@ -171,6 +199,7 @@ class Services {
       }
       return null;
     } on dio.DioError catch (e) {
+      print(e);
       if (dio.DioErrorType.DEFAULT == e.type &&
           e.error.runtimeType == SocketException) {
         return internetError;
@@ -178,6 +207,7 @@ class Services {
         return dataError;
       }
     } catch (e) {
+      print(e);
       return dataError;
     }
   }

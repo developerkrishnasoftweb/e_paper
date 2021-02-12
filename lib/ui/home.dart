@@ -164,7 +164,7 @@ Widget buildCards ({@required BuildContext context, @required FeedData feedData}
   Size size = MediaQuery.of(context).size;
   Orientation orientation = MediaQuery.of(context).orientation;
   _readPaper () {
-    if(userdata.subscriptionPlanId != null && userdata.subscriptionPlanId != "") {
+    if(userdata.subscriptionPlanId != null && userdata.subscriptionPlanId != "" && userdata.subscriptionPlanId != "0") {
       Navigator.push(context, MaterialPageRoute(builder: (context) => Preview(pdfFilePath: feedData.pdfFile)));
     } else {
       showDialog(context: context, barrierDismissible: true, child: AlertDialog(
