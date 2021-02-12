@@ -1,10 +1,9 @@
+import 'package:e_paper/ui/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../constant/colors.dart';
-import '../constant/colors.dart';
-import '../constant/global.dart';
 import '../constant/global.dart';
 import '../services/urls.dart';
 import '../ui/account.dart';
@@ -54,7 +53,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 : widget;
                           },
                         )
-                      : null
+                      : GestureDetector(
+                          child: Icon(Icons.add_a_photo_outlined),
+                          onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ManageAccount()))
+                              .then((value) => homeState.setState(() {})),
+                        )
                   : null,
               decoration: BoxDecoration(color: Colors.white),
               onDetailsPressed: () {
@@ -74,9 +80,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         onTap: () {
                           widget.scaffoldKey.currentState.openEndDrawer();
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ManageAccount()));
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ManageAccount()))
+                              .then((value) => homeState.setState(() {}));
                         })
                     : SizedBox()),
             _createDrawerItem(
@@ -93,9 +100,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => EPaperPlans()));
                 }),
-            Divider(color: primaryColor,),
+            Divider(
+              color: primaryColor,
+            ),
             _createDrawerItem(
-                text: "Exit", icon: Icons.exit_to_app, onTap: () => SystemNavigator.pop()),
+                text: "Exit",
+                icon: Icons.exit_to_app,
+                onTap: () => SystemNavigator.pop()),
           ],
         ),
       ),

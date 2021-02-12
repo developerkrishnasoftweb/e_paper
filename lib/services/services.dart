@@ -53,7 +53,9 @@ class Services {
                     ? response.data["message"]["email"]
                     : (response.data["message"]["mobile"] != null
                         ? response.data["message"]["mobile"]
-                        : response.data["message"])),
+                        : response.data["message"]["username"] != null
+                            ? response.data["message"]["username"]
+                            : response.data["message"])),
             response: response.data["status"]);
       }
       return null;
@@ -128,6 +130,29 @@ class Services {
 
   static Future<Data> getFeed() async {
     String url = Urls.baseUrl + Urls.ePaper;
+    try {
+      dio.Response response = await dio.Dio().get(url);
+      if (response.statusCode == 200) {
+        return Data(
+            response: response.data["status"],
+            message: response.data["message"],
+            data: [response.data["data"]]);
+      }
+      return null;
+    } on dio.DioError catch (e) {
+      if (dio.DioErrorType.DEFAULT == e.type &&
+          e.error.runtimeType == SocketException) {
+        return internetError;
+      } else {
+        return dataError;
+      }
+    } catch (e) {
+      return dataError;
+    }
+  }
+
+  static Future<Data> checkPlanValidity() async {
+    String url = Urls.baseUrl + Urls.checkPlanValidity;
     try {
       dio.Response response = await dio.Dio().get(url);
       if (response.statusCode == 200) {

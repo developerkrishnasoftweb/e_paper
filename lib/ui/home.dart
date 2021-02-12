@@ -14,9 +14,13 @@ import '../static/drawer.dart';
 import '../ui/preview.dart';
 import 'preview.dart';
 
+_HomeState homeState;
 class Home extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _HomeState createState() {
+    homeState = _HomeState();
+    return homeState;
+  }
 }
 
 class _HomeState extends State<Home> {

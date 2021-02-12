@@ -23,7 +23,7 @@ class _SignUp extends State<SignUp> {
       email = "",
       refCode = "",
       password = "",
-      confirmPassword = "";
+      confirmPassword = "", username = "";
   Color showPassword = Colors.black54;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextStyle inputTextStyle = TextStyle(fontSize: 16);
@@ -53,7 +53,10 @@ class _SignUp extends State<SignUp> {
               alignment: Alignment.centerLeft,
               child: IconButton(
                 icon: Icon(Icons.arrow_back_ios_rounded),
-                onPressed: () {},
+                onPressed: () {
+                  FocusScope.of(context).unfocus();
+                  Navigator.pop(context);
+                },
                 splashRadius: 25,
               ),
             ),
@@ -73,6 +76,18 @@ class _SignUp extends State<SignUp> {
             SizedBox(
               height: 10,
             ),
+            input(
+                context: context,
+                style: inputTextStyle,
+                onChanged: (value) {
+                  setState(() {
+                    username = value;
+                  });
+                },
+                decoration: InputDecoration(
+                    border: border(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15)),
+                text: "Username"),
             input(
                 context: context,
                 style: inputTextStyle,
@@ -243,10 +258,9 @@ class _SignUp extends State<SignUp> {
   }
 
   void _signUp() async {
-    if (firstName.isNotEmpty &&
+    if (username.isNotEmpty && firstName.isNotEmpty &&
         lastName.isNotEmpty &&
         mobileNo.isNotEmpty &&
-        refCode.isNotEmpty &&
         password.isNotEmpty &&
         confirmPassword.isNotEmpty &&
         email.isNotEmpty) {
@@ -258,6 +272,7 @@ class _SignUp extends State<SignUp> {
             if (RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)').hasMatch(mobileNo)) {
               setLoading(true);
               FormData formData = FormData.fromMap({
+                "username": username,
                 "first_name": firstName,
                 "last_name": lastName,
                 "email": email,
