@@ -1,6 +1,6 @@
 class Urls {
   static String assetBaseUrl = "https://vishvasya.krishnasoftweb.com/";
-  static String baseUrl = "http://vishvasya.krishnasoftweb.com/api/";
+  static String baseUrl = "https://vishvasya.krishnasoftweb.com/api/";
   static String signIn = "login";
   static String getUser = "get_user";
   static String trialPlan = "trial_plan";

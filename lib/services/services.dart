@@ -249,6 +249,8 @@ class Services {
       }
       return null;
     } on dio.DioError catch (e) {
+      print("Admin side Error");
+      throw(e);
       if (dio.DioErrorType.DEFAULT == e.type &&
           e.error.runtimeType == SocketException) {
         return internetError;
@@ -256,6 +258,8 @@ class Services {
         return dataError;
       }
     } catch (e) {
+      print("Error");
+      throw(e);
       return dataError;
     }
   }
@@ -272,6 +276,7 @@ class Services {
       }
       return null;
     } on dio.DioError catch (e) {
+      throw(e);
       if (dio.DioErrorType.DEFAULT == e.type &&
           e.error.runtimeType == SocketException) {
         return internetError;
@@ -279,6 +284,7 @@ class Services {
         return dataError;
       }
     } catch (e) {
+      throw(e);
       return dataError;
     }
   }
