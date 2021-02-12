@@ -19,6 +19,7 @@ class EPaperPlans extends StatefulWidget {
 class _EPaperPlansState extends State<EPaperPlans> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<SubscriptionPlan> plans = [];
+  SubscriptionPlan selectedPlan;
   Razorpay _razorpay;
 
   @override
@@ -49,11 +50,11 @@ class _EPaperPlansState extends State<EPaperPlans> {
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
-    print("Calling subscribe API");
-    print(response.orderId);
-
     FormData formData = FormData.fromMap({
-      "payment_id": response.paymentId,
+      "razorpay_payment_id": response.paymentId,
+      "razorpay_signature" : response.signature,
+      "reader_id" : userdata.id,
+      "plan_id" : selectedPlan.id,
     });
     Services.subscribe(formData).then((value) {
       if (value.response) {
@@ -216,13 +217,14 @@ class _EPaperPlansState extends State<EPaperPlans> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
                               side: BorderSide(color: primaryColor)),
-                          onPressed: () => _buy(plans[index]),
+                          onPressed: userdata.subscriptionPlanId == plans[index].id ? null : () => _buy(plans[index]),
                           child: Text(
-                            "Buy Now",
-                            style: TextStyle(color: primaryColor, fontSize: 18),
+                            userdata.subscriptionPlanId == plans[index].id ? "Activated" : "Buy Now",
+                            style: TextStyle(color: userdata.subscriptionPlanId == plans[index].id ? Colors.white : primaryColor, fontSize: 18),
                           ),
                           splashColor: primarySwatch[100],
                           highlightColor: primarySwatch[100],
+                          color: userdata.subscriptionPlanId == plans[index].id ? primaryColor : null,
                         ),
                         height: 60,
                         width: size.width * 0.7,
@@ -240,22 +242,48 @@ class _EPaperPlansState extends State<EPaperPlans> {
     );
   }
   _buy (SubscriptionPlan plan) async {
-    var options = {
-      'key': config.razorpayApiKey,
-      'amount': double.parse(plan.priceINR) * 100,
-      'name': 'Vishvasya Vrutantam',
-      'description': 'Subscription Plan',
-      'image': Urls.assetBaseUrl + config.logo,
-      'prefill': {'contact': userdata.mobile, 'email': userdata.email},
-      'external': {
-        'wallets': ['paytm']
-      }
-    };
-    print(options);
-    try {
-      _razorpay.open(options);
-    } catch (e) {
-      debugPrint(e);
+    if(int.parse(plan.priceINR) == 0) {
+      await Services.trialPlan(planId: plan.id).then((value) {
+        if(value.response) {
+          showToastMessage(value.message);
+        } else {
+          showToastMessage(value.message);
+        }
+      });
+    } else {
+      var options = {
+        'key': config.razorpayApiKey,
+        'amount': double.parse(plan.priceINR) * 100,
+        'name': 'Vishvasya Vrutantam',
+        'order_id' : '',
+        'description': 'Subscription Plan',
+        'image': Urls.assetBaseUrl + config.logo,
+        'prefill': {'contact': userdata.mobile, 'email': userdata.email},
+        'external': {
+          'wallets': ['paytm']
+        }
+      };
+      FormData formData = FormData.fromMap({
+        "reader_id": userdata.id,
+        "plan_id" : plan.id,
+        "referral_code" : "",
+        "amount" : double.parse(plan.priceINR) * 100,
+        "currency" : "INR"
+      });
+      await Services.generateOrderId(formData).then((value) {
+        print(value.data);
+      });
+      /* try {
+        setState(() {
+          selectedPlan = plan;
+        });
+        _razorpay.open(options);
+      } catch (e) {
+        setState(() {
+          selectedPlan = null;
+        });
+        debugPrint(e);
+      } */
     }
   }
 }

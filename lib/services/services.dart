@@ -68,6 +68,31 @@ class Services {
     }
   }
 
+  static Future<Data> trialPlan({@required String planId}) async {
+    String url = Urls.baseUrl + Urls.trialPlan;
+    try {
+      dio.Response response = await dio.Dio()
+          .post(url, data: dio.FormData.fromMap({"user_id": userdata.id, "plan_id" : planId}));
+      if (response.statusCode == 200) {
+        await getUserData();
+        return Data(
+            data: [response.data["data"]],
+            message: response.data["message"],
+            response: response.data["status"]);
+      }
+      return null;
+    } on dio.DioError catch (e) {
+      if (dio.DioErrorType.DEFAULT == e.type &&
+          e.error.runtimeType == SocketException) {
+        return internetError;
+      } else {
+        return dataError;
+      }
+    } catch (e) {
+      return dataError;
+    }
+  }
+
   static Future<Data> signUp(body) async {
     String url = Urls.baseUrl + Urls.signUp;
     try {
@@ -215,7 +240,30 @@ class Services {
   static Future<Data> subscribe(body) async {
     String url = Urls.baseUrl + Urls.subscribe;
     try {
-      dio.Response response = await dio.Dio().get(url);
+      dio.Response response = await dio.Dio().post(url, data: body);
+      if (response.statusCode == 200) {
+        return Data(
+            response: response.data["status"],
+            message: response.data["message"],
+            data: [response.data["data"]]);
+      }
+      return null;
+    } on dio.DioError catch (e) {
+      if (dio.DioErrorType.DEFAULT == e.type &&
+          e.error.runtimeType == SocketException) {
+        return internetError;
+      } else {
+        return dataError;
+      }
+    } catch (e) {
+      return dataError;
+    }
+  }
+
+  static Future<Data> generateOrderId(body) async {
+    String url = Urls.baseUrl + Urls.generateOrderId;
+    try {
+      dio.Response response = await dio.Dio().post(url, data: body);
       if (response.statusCode == 200) {
         return Data(
             response: response.data["status"],
