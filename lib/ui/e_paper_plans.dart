@@ -21,6 +21,13 @@ class _EPaperPlansState extends State<EPaperPlans> {
   List<SubscriptionPlan> plans = [];
   SubscriptionPlan selectedPlan;
   Razorpay _razorpay;
+  bool isLoading = false;
+
+  setLoading(bool status) {
+    setState(() {
+      isLoading = status;
+    });
+  }
 
   @override
   void initState() {
@@ -62,16 +69,19 @@ class _EPaperPlansState extends State<EPaperPlans> {
         setState(() {});
         showToastMessage(value.message);
       } else {
+        setLoading(false);
         showToastMessage(value.message);
       }
     });
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
+    setLoading(false);
     showToastMessage("Payment Failed");
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
+    setLoading(false);
     showToastMessage("Something went wrong");
   }
 
@@ -83,7 +93,6 @@ class _EPaperPlansState extends State<EPaperPlans> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     Orientation orientation = MediaQuery.of(context).orientation;
     return Scaffold(
       key: _scaffoldKey,
@@ -113,138 +122,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
                   childAspectRatio:
                       300 / (orientation == Orientation.portrait ? 360 : 320)),
               itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3),
-                      border: Border.all(
-                          color: Colors.black12,
-                          width: 1.5,
-                          style: BorderStyle.solid)),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: size.height * 0.1,
-                        width: size.width,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.02),
-                          border: Border(
-                              bottom: BorderSide(
-                                  color: Colors.black12, width: 1.5)),
-                        ),
-                        child: Text(
-                          "${plans[index].title}",
-                          style: TextStyle(
-                              color: Colors.black45,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      RichText(
-                        text: TextSpan(
-                            text: "\u20B9\t",
-                            style: TextStyle(
-                              color: Colors.black45,
-                              fontSize: 50.0,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: "${plans[index].priceINR}",
-                                style: TextStyle(
-                                  color: Colors.black45,
-                                  fontSize: 45.0,
-                                ),
-                              )
-                            ]),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 5),
-                        child: RichText(
-                          text: TextSpan(children: [
-                            WidgetSpan(
-                                alignment: PlaceholderAlignment.middle,
-                                child: Container(
-                                  height: 5,
-                                  width: 5,
-                                  margin: EdgeInsets.symmetric(horizontal: 10),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.black45),
-                                )),
-                            TextSpan(
-                              text: "${plans[index].planValidity} Days plan",
-                              style: TextStyle(
-                                color: Colors.black45,
-                                fontSize: 20.0,
-                              ),
-                            )
-                          ]),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 5),
-                        child: RichText(
-                          text: TextSpan(children: [
-                            WidgetSpan(
-                                alignment: PlaceholderAlignment.middle,
-                                child: Container(
-                                  height: 5,
-                                  width: 5,
-                                  margin: EdgeInsets.symmetric(horizontal: 10),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.black45),
-                                )),
-                            TextSpan(
-                              text: "${plans[index].features}",
-                              style: TextStyle(
-                                color: Colors.black45,
-                                fontSize: 20.0,
-                              ),
-                            )
-                          ]),
-                        ),
-                      ),
-                      Container(
-                        margin:
-                            EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                        child: FlatButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                              side: BorderSide(color: primaryColor)),
-                          onPressed:
-                              userdata.subscriptionPlanId == plans[index].id
-                                  ? null
-                                  : () => _buy(plans[index]),
-                          child: Text(
-                            userdata.subscriptionPlanId == plans[index].id
-                                ? "Activated"
-                                : "Buy Now",
-                            style: TextStyle(
-                                color: userdata.subscriptionPlanId ==
-                                        plans[index].id
-                                    ? Colors.white
-                                    : primaryColor,
-                                fontSize: 18),
-                          ),
-                          splashColor: primarySwatch[100],
-                          highlightColor: primarySwatch[100],
-                          color: userdata.subscriptionPlanId == plans[index].id
-                              ? primaryColor
-                              : null,
-                        ),
-                        height: 60,
-                        width: size.width * 0.7,
-                      )
-                    ],
-                  ),
-                );
+                return buildSubscriptionCard(plans[index]);
               },
               itemCount: plans.length,
               controller: ScrollController(keepScrollOffset: true),
@@ -256,11 +134,14 @@ class _EPaperPlansState extends State<EPaperPlans> {
   }
 
   _buy(SubscriptionPlan plan) async {
+    setLoading(true);
     if (int.parse(plan.priceINR) == 0) {
       await Services.trialPlan(planId: plan.id).then((value) {
         if (value.response) {
+          setLoading(false);
           showToastMessage(value.message);
         } else {
+          setLoading(false);
           showToastMessage(value.message);
         }
       });
@@ -291,15 +172,153 @@ class _EPaperPlansState extends State<EPaperPlans> {
             });
             _razorpay.open(options);
           } catch (e) {
+            setLoading(false);
             setState(() {
               selectedPlan = null;
             });
           }
         } else {
+          setLoading(false);
           showToastMessage(value.message);
         }
       });
     }
+  }
+  Widget buildSubscriptionCard(SubscriptionPlan plan) {
+    Size size = MediaQuery.of(context).size;
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(3),
+          border: Border.all(
+              color: Colors.black12,
+              width: 1.5,
+              style: BorderStyle.solid)),
+      child: Column(
+        children: [
+          Container(
+            height: size.height * 0.1,
+            width: size.width,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.02),
+              border: Border(
+                  bottom: BorderSide(
+                      color: Colors.black12, width: 1.5)),
+            ),
+            child: Text(
+              "${plan.title}",
+              style: TextStyle(
+                  color: Colors.black45,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          RichText(
+            text: TextSpan(
+                text: "\u20B9\t",
+                style: TextStyle(
+                  color: Colors.black45,
+                  fontSize: 50.0,
+                ),
+                children: [
+                  TextSpan(
+                    text: "${plan.priceINR}",
+                    style: TextStyle(
+                      color: Colors.black45,
+                      fontSize: 45.0,
+                    ),
+                  )
+                ]),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 5),
+            child: RichText(
+              text: TextSpan(children: [
+                WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: Container(
+                      height: 5,
+                      width: 5,
+                      margin: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black45),
+                    )),
+                TextSpan(
+                  text: "${plan.planValidity} Days plan",
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontSize: 20.0,
+                  ),
+                )
+              ]),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 5),
+            child: RichText(
+              text: TextSpan(children: [
+                WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: Container(
+                      height: 5,
+                      width: 5,
+                      margin: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black45),
+                    )),
+                TextSpan(
+                  text: "${plan.features}",
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontSize: 20.0,
+                  ),
+                )
+              ]),
+            ),
+          ),
+          Container(
+            margin:
+            EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            alignment: isLoading ? Alignment.center : null,
+            child: isLoading ? SizedBox(height: 25, width: 25, child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(primaryColor), strokeWidth: 2,),): FlatButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  side: BorderSide(color: primaryColor)),
+              onPressed:
+              userdata.subscriptionPlanId == plan.id
+                  ? null
+                  : () => _buy(plan),
+              child: Text(
+                userdata.subscriptionPlanId == plan.id
+                    ? "Activated"
+                    : "Buy Now",
+                style: TextStyle(
+                    color: userdata.subscriptionPlanId ==
+                        plan.id
+                        ? Colors.white
+                        : primaryColor,
+                    fontSize: 18),
+              ),
+              splashColor: primarySwatch[100],
+              highlightColor: primarySwatch[100],
+              color: userdata.subscriptionPlanId == plan.id
+                  ? primaryColor
+                  : null,
+            ),
+            height: 60,
+            width: size.width * 0.7,
+          )
+        ],
+      ),
+    );
   }
 }
 
