@@ -22,6 +22,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
   SubscriptionPlan selectedPlan;
   Razorpay _razorpay;
   bool isLoading = false;
+  String subscriptionPlanId;
 
   setLoading(bool status) {
     setState(() {
@@ -40,6 +41,13 @@ class _EPaperPlansState extends State<EPaperPlans> {
   }
 
   getSubscriptionPlans() async {
+    await Services.checkPlanValidity().then((value) {
+      if(value.response) {
+        setState(() {
+          subscriptionPlanId = value.data[0]["subscription_plan_id"];
+        });
+      }
+    });
     await Services.getSubscription().then((value) {
       for (int i = 0; i < value.data[0].length; i++) {
         setState(() {
@@ -67,6 +75,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
       if (value.response) {
         await Services.getUserData();
         setState(() {});
+        setLoading(false);
         showToastMessage(value.message);
       } else {
         setLoading(false);
@@ -90,7 +99,6 @@ class _EPaperPlansState extends State<EPaperPlans> {
     super.dispose();
     _razorpay.clear();
   }
-
   @override
   Widget build(BuildContext context) {
     Orientation orientation = MediaQuery.of(context).orientation;
@@ -113,22 +121,22 @@ class _EPaperPlansState extends State<EPaperPlans> {
       ),
       body: plans.length > 0
           ? GridView.builder(
-              padding: EdgeInsets.all(5),
-              physics: BouncingScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: orientation == Orientation.portrait ? 1 : 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio:
-                      300 / (orientation == Orientation.portrait ? 360 : 320)),
-              itemBuilder: (BuildContext context, int index) {
-                return buildSubscriptionCard(plans[index]);
-              },
-              itemCount: plans.length,
-              controller: ScrollController(keepScrollOffset: true),
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-            )
+        padding: EdgeInsets.all(5),
+        physics: BouncingScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: orientation == Orientation.portrait ? 1 : 2,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            childAspectRatio:
+            300 / (orientation == Orientation.portrait ? 360 : 320)),
+        itemBuilder: (BuildContext context, int index) {
+          return buildSubscriptionCard(plans[index]);
+        },
+        itemCount: plans.length,
+        controller: ScrollController(keepScrollOffset: true),
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+      )
           : Center(child: CircularProgressIndicator()),
     );
   }
@@ -184,15 +192,14 @@ class _EPaperPlansState extends State<EPaperPlans> {
       });
     }
   }
+
   Widget buildSubscriptionCard(SubscriptionPlan plan) {
     Size size = MediaQuery.of(context).size;
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(3),
           border: Border.all(
-              color: Colors.black12,
-              width: 1.5,
-              style: BorderStyle.solid)),
+              color: Colors.black12, width: 1.5, style: BorderStyle.solid)),
       child: Column(
         children: [
           Container(
@@ -201,9 +208,8 @@ class _EPaperPlansState extends State<EPaperPlans> {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: Colors.black.withOpacity(0.02),
-              border: Border(
-                  bottom: BorderSide(
-                      color: Colors.black12, width: 1.5)),
+              border:
+                  Border(bottom: BorderSide(color: Colors.black12, width: 1.5)),
             ),
             child: Text(
               "${plan.title}",
@@ -247,8 +253,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
                       width: 5,
                       margin: EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.black45),
+                          shape: BoxShape.circle, color: Colors.black45),
                     )),
                 TextSpan(
                   text: "${plan.planValidity} Days plan",
@@ -271,8 +276,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
                       width: 5,
                       margin: EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.black45),
+                          shape: BoxShape.circle, color: Colors.black45),
                     )),
                 TextSpan(
                   text: "${plan.features}",
@@ -285,34 +289,40 @@ class _EPaperPlansState extends State<EPaperPlans> {
             ),
           ),
           Container(
-            margin:
-            EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             alignment: isLoading ? Alignment.center : null,
-            child: isLoading ? SizedBox(height: 25, width: 25, child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(primaryColor), strokeWidth: 2,),): FlatButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  side: BorderSide(color: primaryColor)),
-              onPressed:
-              userdata.subscriptionPlanId == plan.id
-                  ? null
-                  : () => _buy(plan),
-              child: Text(
-                userdata.subscriptionPlanId == plan.id
-                    ? "Activated"
-                    : "Buy Now",
-                style: TextStyle(
-                    color: userdata.subscriptionPlanId ==
-                        plan.id
-                        ? Colors.white
-                        : primaryColor,
-                    fontSize: 18),
-              ),
-              splashColor: primarySwatch[100],
-              highlightColor: primarySwatch[100],
-              color: userdata.subscriptionPlanId == plan.id
-                  ? primaryColor
-                  : null,
-            ),
+            child: isLoading
+                ? SizedBox(
+                    height: 25,
+                    width: 25,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(primaryColor),
+                      strokeWidth: 2,
+                    ),
+                  )
+                : FlatButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        side: BorderSide(color: primaryColor)),
+                    onPressed: subscriptionPlanId == plan.id
+                        ? (){}
+                        : () => _buy(plan),
+                    child: Text(
+                      subscriptionPlanId == plan.id
+                          ? "Activated"
+                          : "Buy Now",
+                      style: TextStyle(
+                          color: subscriptionPlanId == plan.id
+                              ? Colors.white
+                              : primaryColor,
+                          fontSize: 18),
+                    ),
+                    splashColor: primarySwatch[100],
+                    highlightColor: primarySwatch[100],
+                    color: subscriptionPlanId == plan.id
+                        ? primaryColor
+                        : null,
+                  ),
             height: 60,
             width: size.width * 0.7,
           )

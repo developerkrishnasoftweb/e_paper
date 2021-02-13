@@ -1,3 +1,5 @@
+import 'global.dart';
+
 class Config {
   String id,
       title,
@@ -73,7 +75,7 @@ class Userdata {
       password,
       profileImage,
       refCode,
-      subscriptionPlanId;
+      subscriptionId;
   Userdata(
       {this.id,
         this.username,
@@ -84,5 +86,15 @@ class Userdata {
         this.firstName,
         this.profileImage,
         this.refCode,
-        this.subscriptionPlanId});
+        this.subscriptionId});
+  Userdata.fromJSON(Map<String, dynamic> json) : id = json[Params.id],
+        username = json[Params.username],
+        firstName = json[Params.firstName],
+        lastName = json[Params.lastName],
+        email = json[Params.email],
+        mobile = json[Params.mobile],
+        password = json[Params.password],
+        profileImage = json[Params.profileImage],
+        refCode = json[Params.refCode],
+        subscriptionId = json[Params.subscriptionId];
 }

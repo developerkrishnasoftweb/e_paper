@@ -71,8 +71,9 @@ class Services {
   static Future<Data> trialPlan({@required String planId}) async {
     String url = Urls.baseUrl + Urls.trialPlan;
     try {
-      dio.Response response = await dio.Dio()
-          .post(url, data: dio.FormData.fromMap({"user_id": userdata.id, "plan_id" : planId}));
+      dio.Response response = await dio.Dio().post(url,
+          data: dio.FormData.fromMap(
+              {"user_id": userdata.id, "plan_id": planId}));
       if (response.statusCode == 200) {
         await getUserData();
         return Data(
@@ -209,12 +210,11 @@ class Services {
     try {
       dio.Response response = await dio.Dio().post(url,
           data: dio.FormData.fromMap(
-              {"subscription_id": userdata.subscriptionPlanId}));
+              {"subscription_id": userdata.subscriptionId}));
       if (response.statusCode == 200) {
         if (!response.data['status']) {
           if (response.data['data'] != null) {
-            if(response.data["data"]['status'] == "n")
-            await getUserData();
+            if (response.data["data"]['status'] == "n") await getUserData();
           }
         }
         return Data(
@@ -249,8 +249,6 @@ class Services {
       }
       return null;
     } on dio.DioError catch (e) {
-      print("Admin side Error");
-      throw(e);
       if (dio.DioErrorType.DEFAULT == e.type &&
           e.error.runtimeType == SocketException) {
         return internetError;
@@ -258,8 +256,6 @@ class Services {
         return dataError;
       }
     } catch (e) {
-      print("Error");
-      throw(e);
       return dataError;
     }
   }
@@ -276,7 +272,7 @@ class Services {
       }
       return null;
     } on dio.DioError catch (e) {
-      throw(e);
+      throw (e);
       if (dio.DioErrorType.DEFAULT == e.type &&
           e.error.runtimeType == SocketException) {
         return internetError;
@@ -284,7 +280,7 @@ class Services {
         return dataError;
       }
     } catch (e) {
-      throw(e);
+      throw (e);
       return dataError;
     }
   }

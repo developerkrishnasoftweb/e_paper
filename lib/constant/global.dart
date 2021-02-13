@@ -1,7 +1,9 @@
-import 'file:///C:/Users/sai/Projects/e_paper/lib/constant/models.dart';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'models.dart';
 
 SharedPreferences sharedPreferences;
 Userdata userdata;
