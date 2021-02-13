@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:e_paper/ui/web.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -127,14 +128,14 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                       style: TextStyle(color: primaryColor),
                       children: [
                         WidgetSpan(
-                            child: InkWell(
+                            child: GestureDetector(
                           child: Text(
                             "www.vishvasyavrutantam.com",
                             style: TextStyle(
                                 color: primaryColor,
                                 decoration: TextDecoration.underline),
                           ),
-                          onTap: () {},
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Web())),
                         ))
                       ]),
                 ),
@@ -148,7 +149,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                       )),
                   WidgetSpan(
                     alignment: PlaceholderAlignment.middle,
-                    child: InkWell(
+                    child: GestureDetector(
                       child: Text("\tSignUp",
                           style: TextStyle(
                               color: primaryColor,
