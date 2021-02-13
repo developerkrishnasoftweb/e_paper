@@ -38,6 +38,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
     username = TextEditingController(text: widget.username);
     password = TextEditingController();
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -76,7 +77,9 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                   text: "Username",
                   controller: username,
                   style: TextStyle(fontSize: 16),
-                  decoration: InputDecoration(border: border(), contentPadding: EdgeInsets.symmetric(horizontal: 15)),
+                  decoration: InputDecoration(
+                      border: border(),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                   margin: EdgeInsets.symmetric(horizontal: 30),
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.emailAddress),
@@ -87,7 +90,9 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                   controller: password,
                   style: TextStyle(fontSize: 16),
                   margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  decoration: InputDecoration(border: border(), contentPadding: EdgeInsets.symmetric(horizontal: 15)),
+                  decoration: InputDecoration(
+                      border: border(),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                   textInputAction: TextInputAction.done,
                   onEditingComplete: _login),
               Container(
@@ -135,7 +140,8 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                                 color: primaryColor,
                                 decoration: TextDecoration.underline),
                           ),
-                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Web())),
+                          onTap: () => Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => Web())),
                         ))
                       ]),
                 ),
