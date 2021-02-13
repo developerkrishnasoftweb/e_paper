@@ -135,7 +135,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                         WidgetSpan(
                             child: GestureDetector(
                           child: Text(
-                            "www.vishvasyavrutantam.com",
+                            "https://vishvasya.krishnasoftweb.com/",
                             style: TextStyle(
                                 color: primaryColor,
                                 decoration: TextDecoration.underline),
