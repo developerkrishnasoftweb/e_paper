@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../signin_signup/signin.dart';
-
 class Splash extends StatefulWidget {
   final Widget widget;
   Splash({this.widget});

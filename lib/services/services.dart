@@ -5,9 +5,7 @@ import 'package:dio/dio.dart' as dio;
 import 'package:dio/dio.dart';
 import 'package:e_paper/constant/global.dart';
 import 'package:e_paper/main.dart';
-import 'file:///C:/Users/sai/Projects/e_paper/lib/constant/models.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 import '../services/data.dart';
@@ -272,7 +270,6 @@ class Services {
       }
       return null;
     } on dio.DioError catch (e) {
-      throw (e);
       if (dio.DioErrorType.DEFAULT == e.type &&
           e.error.runtimeType == SocketException) {
         return internetError;
@@ -280,7 +277,6 @@ class Services {
         return dataError;
       }
     } catch (e) {
-      throw (e);
       return dataError;
     }
   }
@@ -323,10 +319,21 @@ class Services {
   }
 
   static Future<String> loadPDF({@required String pdfFile}) async {
-    var response = await http.get(Urls.assetBaseUrl + pdfFile);
+    dio.Response response = await dio.Dio().get(Urls.assetBaseUrl + pdfFile,
+        options: Options(
+            responseType: ResponseType.bytes,
+            followRedirects: false,
+            validateStatus: (status) {
+              return status < 500;
+            }),
+        onReceiveProgress: showDownloadProgress);
     var dir = await getTemporaryDirectory();
     File file = new File(dir.path + "/data.pdf");
-    var data = await file.writeAsBytes(response.bodyBytes, flush: true);
+    await file.writeAsBytes(response.data, flush: true);
     return file.path;
+  }
+
+  static showDownloadProgress(received, total) {
+    print(received.toString() + " / " + total.toString());
   }
 }
