@@ -21,13 +21,18 @@ class _PreviewState extends State<Preview> {
   @override
   void initState() {
     super.initState();
-    Services.loadPDF(pdfFile: widget.pdfFilePath).then((value) {
+    loadPdf();
+  }
+  loadPdf () async {
+    await Services.loadPDF(pdfFile: widget.pdfFilePath).then((value) {
       setState(() {
         _localFile = value;
       });
     });
   }
+  downloadProgress () {
 
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

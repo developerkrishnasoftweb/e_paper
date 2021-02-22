@@ -319,21 +319,24 @@ class Services {
   }
 
   static Future<String> loadPDF({@required String pdfFile}) async {
-    dio.Response response = await dio.Dio().get(Urls.assetBaseUrl + pdfFile,
+    var dir = await getTemporaryDirectory();
+    var path = dir.path + pdfFile.split("/").last;
+    if(await File(path).exists())
+      return path;
+      dio.Response response = await dio.Dio().get(Urls.assetBaseUrl + pdfFile,
         options: Options(
             responseType: ResponseType.bytes,
             followRedirects: false,
             validateStatus: (status) {
               return status < 500;
             }),
-        onReceiveProgress: showDownloadProgress);
-    var dir = await getTemporaryDirectory();
-    File file = new File(dir.path + "/data.pdf");
+        onReceiveProgress: );
+    File file = new File(path);
     await file.writeAsBytes(response.data, flush: true);
     return file.path;
   }
 
   static showDownloadProgress(received, total) {
-    print(received.toString() + " / " + total.toString());
+    // print(((received / 1024) / 1024).round().toString() + "Mb / " + ((total / 1024) / 1024).round().toString() + "Mb");
   }
 }

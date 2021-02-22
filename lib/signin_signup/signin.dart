@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:e_paper/ui/web.dart';
+import 'package:e_paper/services/urls.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../constant/colors.dart';
 import '../constant/global.dart';
@@ -135,13 +136,18 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                         WidgetSpan(
                             child: GestureDetector(
                           child: Text(
-                            "https://vishvasya.krishnasoftweb.com/",
+                            Urls.assetBaseUrl,
                             style: TextStyle(
                                 color: primaryColor,
                                 decoration: TextDecoration.underline),
                           ),
-                          onTap: () => Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Web())),
+                          onTap: () async {
+                            if(await canLaunch(Urls.assetBaseUrl)) {
+                              launch(Urls.assetBaseUrl);
+                            } else {
+                              showToastMessage("Unable to open URL");
+                            }
+                          },
                         ))
                       ]),
                 ),
@@ -149,7 +155,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
               RichText(
                 text: TextSpan(children: [
                   TextSpan(
-                      text: "New to Visvasya Vrutantam",
+                      text: "New to Visvasya Vrutantah",
                       style: TextStyle(
                         color: Colors.black54,
                       )),
