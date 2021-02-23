@@ -19,11 +19,13 @@ Future<void> main() async {
   await Services.config().then((value) async {
     config = Config.fromJson(await jsonDecode(sharedPreferences.getString(Params.config)));
   });
-  if (status) await setUserdata();
-  if (status) await Services.getUserData();
-  if (status) await Services.checkPlanValidity();
+  if (status) {
+    await setUserdata();
+    await Services.getUserData();
+    await Services.checkPlanValidity();
+  }
   runApp(MaterialApp(
-      title: 'E Paper',
+      title: 'Vishvasya Vrutantah',
       theme: ThemeData(
           primarySwatch: primaryColor,
           visualDensity: VisualDensity.adaptivePlatformDensity,
