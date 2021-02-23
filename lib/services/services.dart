@@ -5,6 +5,7 @@ import 'package:dio/dio.dart' as dio;
 import 'package:dio/dio.dart';
 import 'package:e_paper/constant/global.dart';
 import 'package:e_paper/main.dart';
+import 'package:e_paper/ui/preview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -330,7 +331,7 @@ class Services {
             validateStatus: (status) {
               return status < 500;
             }),
-        onReceiveProgress: );
+        onReceiveProgress: previewState.downloadProgress);
     File file = new File(path);
     await file.writeAsBytes(response.data, flush: true);
     return file.path;

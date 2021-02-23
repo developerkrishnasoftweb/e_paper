@@ -6,11 +6,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 
+_PreviewState previewState;
 class Preview extends StatefulWidget {
   final String pdfFilePath;
   Preview({@required this.pdfFilePath}) : assert(pdfFilePath != null);
   @override
-  _PreviewState createState() => _PreviewState();
+  _PreviewState createState() {
+    previewState = _PreviewState();
+    return previewState;
+  }
 }
 
 class _PreviewState extends State<Preview> {
@@ -30,8 +34,8 @@ class _PreviewState extends State<Preview> {
       });
     });
   }
-  downloadProgress () {
-
+  downloadProgress (received, total) {
+    print(((received / 1024) / 1024).round().toString() + "Mb / " + ((total / 1024) / 1024).round().toString() + "Mb");
   }
   @override
   Widget build(BuildContext context) {
