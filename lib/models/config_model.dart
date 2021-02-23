@@ -1,5 +1,3 @@
-import 'global.dart';
-
 class Config {
   String id,
       title,
@@ -63,38 +61,4 @@ class Config {
     this.googleSecretKey = json["google_secret_key"];
     this.googleClientId = json["google_client_id"];
   }
-}
-
-class Userdata {
-  final String id,
-      username,
-      firstName,
-      lastName,
-      email,
-      mobile,
-      password,
-      profileImage,
-      refCode,
-      subscriptionId;
-  Userdata(
-      {this.id,
-        this.username,
-        this.mobile,
-        this.password,
-        this.email,
-        this.lastName,
-        this.firstName,
-        this.profileImage,
-        this.refCode,
-        this.subscriptionId});
-  Userdata.fromJSON(Map<String, dynamic> json) : id = json[Params.id],
-        username = json[Params.username],
-        firstName = json[Params.firstName],
-        lastName = json[Params.lastName],
-        email = json[Params.email],
-        mobile = json[Params.mobile],
-        password = json[Params.password],
-        profileImage = json[Params.profileImage],
-        refCode = json[Params.refCode],
-        subscriptionId = json[Params.subscriptionId];
 }

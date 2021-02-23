@@ -202,8 +202,8 @@ class _ManageAccountState extends State<ManageAccount> {
       onTap: getImage,
       borderRadius: BorderRadius.circular(150),
       child: Container(
-        height: 150,
-        width: 150,
+        height: 100,
+        width: 100,
         alignment: Alignment.center,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(150),

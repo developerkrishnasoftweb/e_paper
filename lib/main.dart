@@ -1,12 +1,13 @@
 import 'dart:convert';
-import 'package:e_paper/services/services.dart';
+import 'services/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constant/colors.dart';
 import 'constant/global.dart';
-import 'constant/models.dart';
+import 'models/config_model.dart';
+import 'models/user_model.dart';
 import 'signin_signup/signin.dart';
 import 'ui/home.dart';
 import 'ui/splash_screen.dart';
@@ -38,17 +39,6 @@ Future<void> setUserdata() async {
       await jsonDecode(sharedPreferences.getString(Params.userData) ?? "[{}]");
   if (data != null) {
     userdata = Userdata.fromJSON(data[0]);
-    userdata = Userdata(
-        email: data[0][Params.email],
-        firstName: data[0][Params.firstName],
-        username: data[0][Params.username],
-        id: data[0][Params.id],
-        lastName: data[0][Params.lastName],
-        mobile: data[0][Params.mobile],
-        password: data[0][Params.password],
-        profileImage: data[0][Params.profileImage],
-        refCode: data[0][Params.refCode],
-        subscriptionId: data[0][Params.subscriptionId]);
   }
   return;
 }

@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:dio/dio.dart' as dio;
 import 'package:dio/dio.dart';
-import 'package:e_paper/constant/global.dart';
-import 'package:e_paper/main.dart';
-import 'package:e_paper/ui/preview.dart';
+import '../constant/global.dart';
+import '../main.dart';
+import '../ui/preview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 

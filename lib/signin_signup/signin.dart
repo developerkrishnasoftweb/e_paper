@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:e_paper/services/urls.dart';
+import '../services/urls.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

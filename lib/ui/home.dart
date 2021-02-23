@@ -1,20 +1,22 @@
-import 'dart:ui';
 
-import '../ui/e_paper_plans.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
+import '../models/feed_model.dart';
 
 import '../constant/colors.dart';
 import '../constant/global.dart';
-import '../services/services.dart';
 import '../services/urls.dart';
 import '../signin_signup/signin.dart';
 import '../static/drawer.dart';
-import '../ui/preview.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import '../services/services.dart';
+import 'package:flutter/material.dart';
+
+import 'e_paper_plans.dart';
 import 'preview.dart';
 
 _HomeState homeState;
+
 class Home extends StatefulWidget {
   @override
   _HomeState createState() {
@@ -38,13 +40,7 @@ class _HomeState extends State<Home> {
       if (value.response) {
         for (int i = 0; i < value.data[0].length; i++) {
           setState(() {
-            feedData.add(FeedData(
-                id: value.data[0][i]["id"],
-                title: value.data[0][i]["title"],
-                description: value.data[0][i]["description"],
-                pdfFile: value.data[0][i]["pdf_file"],
-                createdAt: value.data[0][i]["created_at"],
-                previewImage: value.data[0][i]["preview_image"]));
+            feedData.add(FeedData.fromJson(value.data[0][i]));
           });
         }
       } else {
@@ -75,61 +71,66 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     Orientation orientation = MediaQuery.of(context).orientation;
-    return WillPopScope(child: Scaffold(
-        key: _scaffoldKey,
-        drawer: CustomDrawer(
-          scaffoldKey: _scaffoldKey,
-        ),
-        appBar: AppBar(
-          elevation: 0,
-          title: Text(
-            "Home",
-            style: TextStyle(
-              color: Colors.white,
+    return WillPopScope(
+        child: Scaffold(
+            key: _scaffoldKey,
+            drawer: CustomDrawer(
+              scaffoldKey: _scaffoldKey,
             ),
-          ),
-          actions: [
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10.0),
-                child: GestureDetector(
-                    child: Text(
-                      "LOG OUT",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    onTap: _logout),
+            appBar: AppBar(
+              elevation: 0,
+              title: Text(
+                "Home",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
               ),
-            )
-          ],
-          backgroundColor: primaryColor,
-        ),
-        body: feedData.length > 0
-            ? GridView.builder(
-          physics: BouncingScrollPhysics(),
-          padding: EdgeInsets.all(5),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: orientation == Orientation.portrait ? 1 : 2,
-              crossAxisSpacing: 5,
-              mainAxisSpacing: 5,
-              childAspectRatio: size.width /
-                  (orientation == Orientation.portrait ? 400 : 500)),
-          itemBuilder: (BuildContext context, int index) {
-            return buildCards(context: context, feedData: feedData[index]);
-          },
-          itemCount: feedData.length,
-          controller: ScrollController(keepScrollOffset: true),
-          shrinkWrap: true,
-          scrollDirection: Axis.vertical,
-        )
-            : Center(
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation(primaryColor),
-          ),
-        )), onWillPop: _exit);
+              actions: [
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: GestureDetector(
+                        child: Text(
+                          "LOG OUT",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        onTap: _logout),
+                  ),
+                )
+              ],
+              backgroundColor: primaryColor,
+            ),
+            body: feedData.length > 0
+                ? GridView.builder(
+                    physics: BouncingScrollPhysics(),
+                    padding: EdgeInsets.all(5),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount:
+                            orientation == Orientation.portrait ? 1 : 2,
+                        crossAxisSpacing: 5,
+                        mainAxisSpacing: 5,
+                        childAspectRatio: size.width /
+                            (orientation == Orientation.portrait ? 400 : 500)),
+                    itemBuilder: (BuildContext context, int index) {
+                      return buildCards(
+                          context: context, feedData: feedData[index]);
+                    },
+                    itemCount: feedData.length,
+                    controller: ScrollController(keepScrollOffset: true),
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                  )
+                : Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(primaryColor),
+                    ),
+                  )),
+        onWillPop: _exit);
   }
+
   Future<bool> _exit() async {
     DateTime now = DateTime.now();
     if (currentBackPressTime == null ||
@@ -142,51 +143,53 @@ class _HomeState extends State<Home> {
   }
 }
 
-class FeedData {
-  final String id,
-      title,
-      description,
-      previewImage,
-      pdfFile,
-      createdAt,
-      updatedAt;
-  FeedData(
-      {this.id,
-      this.title,
-      this.description,
-      this.pdfFile,
-      this.previewImage,
-      this.createdAt,
-      this.updatedAt});
-}
-
-Widget buildCards ({@required BuildContext context, @required FeedData feedData}) {
+Widget buildCards(
+    {@required BuildContext context, @required FeedData feedData}) {
   Size size = MediaQuery.of(context).size;
   Orientation orientation = MediaQuery.of(context).orientation;
-  _readPaper () {
-    if(userdata.subscriptionId != null && userdata.subscriptionId != "" && userdata.subscriptionId != "0") {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Preview(pdfFilePath: feedData.pdfFile)));
+  _readPaper() {
+    if (userdata.subscriptionId != null &&
+        userdata.subscriptionId != "" &&
+        userdata.subscriptionId != "0") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Preview(pdfFilePath: feedData.pdfFile)));
     } else {
-      showDialog(context: context, barrierDismissible: true, child: AlertDialog(
-        title: Text("Vishvasya Vrutantam", style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),),
-        content: Text("You have to become prime member to read newspaper"),
-        actions: [
-          FlatButton(onPressed: () => Navigator.pop(context), child: Text("Close", style: TextStyle(color: Colors.black),)),
-          FlatButton(onPressed: () {
-            Navigator.pop(context);
-            Navigator.push(context, MaterialPageRoute(builder: (context) => EPaperPlans()));
-          }, child: Text("Become Prime Member")),
-        ],
-      ));
+      showDialog(
+          context: context,
+          barrierDismissible: true,
+          child: AlertDialog(
+            title: Text(
+              "Vishvasya Vrutantam",
+              style:
+                  TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+            ),
+            content: Text("You have to become prime member to read newspaper"),
+            actions: [
+              FlatButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    "Close",
+                    style: TextStyle(color: Colors.black),
+                  )),
+              FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => EPaperPlans()));
+                  },
+                  child: Text("Become Prime Member")),
+            ],
+          ));
     }
   }
+
   return Container(
     decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
         border: Border.all(
-            color: primaryColor,
-            width: 1.5,
-            style: BorderStyle.solid)),
+            color: primaryColor, width: 1.5, style: BorderStyle.solid)),
     padding: EdgeInsets.all(5.0),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -198,19 +201,17 @@ Widget buildCards ({@required BuildContext context, @required FeedData feedData}
                 ? size.width * 0.8
                 : size.width * 0.3,
             image: feedData.previewImage != null
-                ? NetworkImage(Urls.assetBaseUrl +
-                feedData.previewImage)
+                ? NetworkImage(Urls.assetBaseUrl + feedData.previewImage)
                 : AssetImage("assets/images/icon.png"),
             fit: BoxFit.fill,
-            loadingBuilder: (BuildContext context,
-                Widget widget, ImageChunkEvent event) {
+            loadingBuilder:
+                (BuildContext context, Widget widget, ImageChunkEvent event) {
               return event != null
                   ? Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(
-                      primaryColor),
-                ),
-              )
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(primaryColor),
+                      ),
+                    )
                   : widget;
             },
           ),
@@ -229,8 +230,7 @@ Widget buildCards ({@required BuildContext context, @required FeedData feedData}
                 ),
                 alignment: PlaceholderAlignment.middle),
             TextSpan(
-                text: "\t" +
-                    feedData.createdAt.split(" ").first,
+                text: "\t" + feedData.createdAt.split(" ").first,
                 style: TextStyle(
                     color: primarySwatch[500],
                     fontSize: 17,
@@ -253,8 +253,8 @@ Widget buildCards ({@required BuildContext context, @required FeedData feedData}
           width: orientation == Orientation.portrait
               ? size.width * 0.8
               : size.width * 0.3 > 100
-              ? size.width * 0.3
-              : 100,
+                  ? size.width * 0.3
+                  : 100,
           child: FlatButton(
             child: Text(
               "Read Now",
@@ -279,5 +279,4 @@ Widget buildCards ({@required BuildContext context, @required FeedData feedData}
       ],
     ),
   );
-
 }

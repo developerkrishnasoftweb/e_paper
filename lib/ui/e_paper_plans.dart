@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:dio/dio.dart';
-import 'package:e_paper/constant/global.dart';
-import 'package:e_paper/services/urls.dart';
+import '../constant/global.dart';
+import '../services/urls.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../services/services.dart';
