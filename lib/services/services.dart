@@ -336,8 +336,4 @@ class Services {
     await file.writeAsBytes(response.data, flush: true);
     return file.path;
   }
-
-  static showDownloadProgress(received, total) {
-    // print(((received / 1024) / 1024).round().toString() + "Mb / " + ((total / 1024) / 1024).round().toString() + "Mb");
-  }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 
 import '../constant/colors.dart';
@@ -21,6 +23,7 @@ class _PreviewState extends State<Preview> {
   String _localFile;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int currentPage = 0, totalPage = 0;
+  double downloadStatus = 0;
 
   @override
   void initState() {
@@ -35,10 +38,13 @@ class _PreviewState extends State<Preview> {
     });
   }
   downloadProgress (received, total) {
-    print(((received / 1024) / 1024).round().toString() + "Mb / " + ((total / 1024) / 1024).round().toString() + "Mb");
+    setState(() {
+      downloadStatus = received / total;
+    });
   }
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -81,9 +87,23 @@ class _PreviewState extends State<Preview> {
               },
             )
           : Center(
-              child: CircularProgressIndicator(
-                backgroundColor: Colors.grey[300],
-                valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(
+                    height: 50,
+                    width: 50,
+                    child: CircularProgressIndicator(
+                      value: downloadStatus,
+                      backgroundColor: Colors.grey,
+                    ),
+                  ),
+                  Text((downloadStatus * 100).toStringAsFixed(0) + "%", style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold
+                  ), textAlign: TextAlign.center)
+                ],
               ),
             ),
     );
