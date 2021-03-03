@@ -18,8 +18,8 @@ class EPaperPlans extends StatefulWidget {
 
 class _EPaperPlansState extends State<EPaperPlans> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<SubscriptionPlan> plans = [];
-  SubscriptionPlan selectedPlan;
+  List<SubscriptionPlans> plans = [];
+  SubscriptionPlans selectedPlan;
   Razorpay _razorpay;
   bool isLoading = false;
   String subscriptionPlanId;
@@ -51,7 +51,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
     await Services.getSubscription().then((value) {
       for (int i = 0; i < value.data[0].length; i++) {
         setState(() {
-          plans.add(SubscriptionPlan(
+          plans.add(SubscriptionPlans(
               title: value.data[0][i]["title"],
               id: value.data[0][i]["id"],
               features: value.data[0][i]["features"],
@@ -147,7 +147,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
     );
   }
 
-  _buy(SubscriptionPlan plan) async {
+  _buy(SubscriptionPlans plan) async {
     setLoading(true);
     if (int.parse(plan.priceINR) == 0) {
       await Services.trialPlan(planId: plan.id).then((value) async {
@@ -206,7 +206,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
     }
   }
 
-  Widget buildSubscriptionCard(SubscriptionPlan plan) {
+  Widget buildSubscriptionCard(SubscriptionPlans plan) {
     Size size = MediaQuery.of(context).size;
     return Container(
       decoration: BoxDecoration(
@@ -347,9 +347,9 @@ class _EPaperPlansState extends State<EPaperPlans> {
   }
 }
 
-class SubscriptionPlan {
+class SubscriptionPlans {
   final String id, title, priceINR, priceUSD, features, planValidity, planType;
-  SubscriptionPlan(
+  SubscriptionPlans(
       {this.title,
       this.id,
       this.features,

@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:Vishvasya_Vrutantah/models/subscription_info_model.dart';
+import 'package:Vishvasya_Vrutantah/ui/e_paper_plans.dart';
+
 import 'widgets/input.dart';
 import 'package:dio/dio.dart';
 import '../constant/global.dart';
@@ -25,6 +28,7 @@ class _ManageAccountState extends State<ManageAccount> {
   EdgeInsetsGeometry padding =
       EdgeInsets.symmetric(horizontal: 10, vertical: 15);
   File image;
+  SubscriptionInfo subscriptionInfo;
 
   setLoading(bool status) {
     setState(() {
@@ -48,6 +52,7 @@ class _ManageAccountState extends State<ManageAccount> {
   void initState() {
     super.initState();
     setControllerData();
+    getSubscription();
   }
 
   setControllerData() {
@@ -56,6 +61,16 @@ class _ManageAccountState extends State<ManageAccount> {
     email = TextEditingController(text: userdata.email);
     mobile = TextEditingController(text: userdata.mobile);
     username = TextEditingController(text: userdata.username);
+  }
+
+  getSubscription() async {
+    await Services.checkPlanValidity().then((value) {
+      if (value.response) {
+        setState(() {
+          subscriptionInfo = SubscriptionInfo.fromJson(value.data[0]);
+        });
+      }
+    });
   }
 
   @override
@@ -151,6 +166,36 @@ class _ManageAccountState extends State<ManageAccount> {
                       icon: Icon(Icons.remove_red_eye,
                           color: showPassword ? Colors.grey : primaryColor),
                     ))),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Subscription Plan",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                ),
+              ),
+            ),
+            subscriptionInfo != null
+                ? Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        buildRow("Subscription Plan", subscriptionInfo.planTitle),
+                        buildRow("Starts From", subscriptionInfo.activatedAt),
+                        buildRow("Ends On", subscriptionInfo.expiredAt),
+                      ],
+                    ),
+                  )
+                : Text("No active plan found",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12)),
           ],
         ),
       ),
@@ -215,6 +260,22 @@ class _ManageAccountState extends State<ManageAccount> {
       setState(() {
         image = result;
       });
+  }
+
+  Widget buildRow(String title, String value) {
+    return Row(children: [
+      Expanded(
+          child: Text(title,
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14))),
+      Expanded(child: Text(value,
+          style: TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.bold,
+              fontSize: 14))),
+    ]);
   }
 
   Widget profileImage() {
