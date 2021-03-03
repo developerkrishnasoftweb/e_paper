@@ -5,6 +5,7 @@ import 'package:Vishvasya_Vrutantah/ui/widgets/button.dart';
 import 'package:Vishvasya_Vrutantah/ui/widgets/input.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ForgotPassword extends StatefulWidget {
   @override
@@ -14,6 +15,12 @@ class ForgotPassword extends StatefulWidget {
 class _ForgotPasswordState extends State<ForgotPassword> {
   String username = "", msg = "";
   bool isLoading = false;
+
+  setMag(String message) {
+    setState(() {
+      msg = message;
+    });
+  }
 
   setLoading(bool status) {
     setState(() {
@@ -25,11 +32,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     setLoading(true);
     await Services.forgotPassword(username).then((value) {
       if (value.response) {
+        setMag(value.message);
         setLoading(false);
-        showToastMessage(value.message);
+        showToastMessage(value.message, toast: Toast.LENGTH_LONG);
       } else {
+        setMag(value.message);
         setLoading(false);
-        showToastMessage(value.message);
+        showToastMessage(value.message, toast: Toast.LENGTH_LONG);
       }
     });
   }
@@ -57,7 +66,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
                   "Forgot Password!",
                   style: TextStyle(
@@ -67,13 +76,18 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 ),
               ),
             ),
-            Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(msg,
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold))),
+            msg.isNotEmpty
+                ? Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Text(msg,
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold))),
+                  )
+                : SizedBox(),
             SizedBox(
               height: 10,
             ),
