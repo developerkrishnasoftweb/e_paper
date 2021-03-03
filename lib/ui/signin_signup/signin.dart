@@ -1,18 +1,19 @@
 import 'dart:convert';
 
+import '../../constant/colors.dart';
+import '../../constant/global.dart';
+import '../../services/services.dart';
+import '../../services/urls.dart';
+import '../../static/input.dart';
 import 'package:dio/dio.dart';
-import '../services/urls.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../constant/colors.dart';
-import '../constant/global.dart';
-import '../main.dart';
-import '../services/services.dart';
-import '../static/input.dart';
-import '../ui/home.dart';
+
+import '../../main.dart';
+import '../home.dart';
 import 'signup.dart';
 
 class SignIn extends StatefulWidget {

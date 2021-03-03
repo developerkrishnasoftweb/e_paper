@@ -1,19 +1,16 @@
-
-
-import '../models/feed_model.dart';
-
-import '../constant/colors.dart';
-import '../constant/global.dart';
-import '../services/urls.dart';
-import '../signin_signup/signin.dart';
-import '../static/drawer.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../services/services.dart';
 import 'package:flutter/material.dart';
 
+import '../models/feed_model.dart';
+import '../constant/colors.dart';
+import '../constant/global.dart';
+import '../services/urls.dart';
+import '../static/drawer.dart';
 import 'e_paper_plans.dart';
 import 'preview.dart';
+import 'signin_signup/signin.dart';
 
 _HomeState homeState;
 

@@ -1,13 +1,13 @@
 import 'dart:ui';
 
+import '../../constant/colors.dart';
+import '../../constant/global.dart';
+import '../../services/services.dart';
+import '../../static/input.dart';
 import 'package:dio/dio.dart';
-import '../constant/colors.dart';
-import '../static/input.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../constant/global.dart';
-import '../services/services.dart';
 import 'signin.dart';
 
 class SignUp extends StatefulWidget {

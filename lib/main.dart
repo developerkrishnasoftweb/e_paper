@@ -8,8 +8,8 @@ import 'constant/colors.dart';
 import 'constant/global.dart';
 import 'models/config_model.dart';
 import 'models/user_model.dart';
-import 'signin_signup/signin.dart';
 import 'ui/home.dart';
+import 'ui/signin_signup/signin.dart';
 import 'ui/splash_screen.dart';
 
 Future<void> main() async {
