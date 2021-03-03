@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:Vishvasya_Vrutantah/models/subscription_info_model.dart';
 import 'package:Vishvasya_Vrutantah/ui/e_paper_plans.dart';
+import 'package:intl/intl.dart';
 
 import 'widgets/input.dart';
 import 'package:dio/dio.dart';
@@ -171,7 +172,7 @@ class _ManageAccountState extends State<ManageAccount> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Subscription Plan",
+                  "Active Subscription Plan",
                   style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -185,17 +186,34 @@ class _ManageAccountState extends State<ManageAccount> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        buildRow("Subscription Plan", subscriptionInfo.planTitle),
-                        buildRow("Starts From", subscriptionInfo.activatedAt),
-                        buildRow("Ends On", subscriptionInfo.expiredAt),
+                        buildRow(
+                            "Subscription Plan", subscriptionInfo.planTitle),
+                        buildRow(
+                            "Starts From",
+                            DateFormat.yMMMd().format(DateTime.parse(
+                                subscriptionInfo.activatedAt
+                                    .split(" ")
+                                    .first))),
+                        buildRow(
+                            "Ends On",
+                            DateFormat.yMMMd().format(DateTime.parse(
+                                subscriptionInfo.expiredAt.split(" ").first))),
                       ],
                     ),
                   )
-                : Text("No active plan found",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12)),
+                : Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "No active plan found",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14),
+                      ),
+                    ),
+                  ),
           ],
         ),
       ),
@@ -270,11 +288,12 @@ class _ManageAccountState extends State<ManageAccount> {
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: 14))),
-      Expanded(child: Text(value,
-          style: TextStyle(
-              color: Colors.grey,
-              fontWeight: FontWeight.bold,
-              fontSize: 14))),
+      Expanded(
+          child: Text(value,
+              style: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14))),
     ]);
   }
 
