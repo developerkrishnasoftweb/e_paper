@@ -1,16 +1,18 @@
-import '../ui/home.dart';
+import '../home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../constant/colors.dart';
-import '../constant/global.dart';
-import '../services/urls.dart';
-import '../ui/account.dart';
-import '../ui/e_paper_plans.dart';
+import '../../constant/colors.dart';
+import '../../constant/global.dart';
+import '../../services/urls.dart';
+import '../account.dart';
+import '../e_paper_plans.dart';
 
 class CustomDrawer extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
+
   CustomDrawer({@required this.scaffoldKey});
+
   @override
   _CustomDrawerState createState() => _CustomDrawerState();
 }
@@ -18,6 +20,7 @@ class CustomDrawer extends StatefulWidget {
 class _CustomDrawerState extends State<CustomDrawer> {
   bool accountVisibility = false;
   DateTime currentBackPressTime;
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -90,6 +93,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 icon: Icons.home,
                 onTap: () {
                   widget.scaffoldKey.currentState.openEndDrawer();
+                  Navigator.pushReplacement(
+                      context, MaterialPageRoute(builder: (context) => Home()));
                 }),
             _createDrawerItem(
                 text: "E-Paper Plans",

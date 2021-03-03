@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'widgets/input.dart';
 import 'package:dio/dio.dart';
 import '../constant/global.dart';
 import '../main.dart';
 import '../services/services.dart';
 import '../services/urls.dart';
-import '../static/input.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ class ManageAccount extends StatefulWidget {
 
 class _ManageAccountState extends State<ManageAccount> {
   TextEditingController firstName, lastName, email, mobile, username;
-  bool isLoading = false, error = false;
+  bool isLoading = false, error = false, showPassword = true;
   String errorMessage = "";
   EdgeInsetsGeometry padding =
       EdgeInsets.symmetric(horizontal: 10, vertical: 15);
@@ -132,6 +132,25 @@ class _ManageAccountState extends State<ManageAccount> {
                 decoration: InputDecoration(
                     border: border(),
                     contentPadding: EdgeInsets.symmetric(horizontal: 15))),
+            input(
+                context: context,
+                width: size.width * 0.9,
+                text: "Password",
+                controller: TextEditingController(text: userdata.password),
+                onChanged: _isMobileAvailable,
+                readOnly: true,
+                obscureText: showPassword,
+                decoration: InputDecoration(
+                    border: border(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                    suffixIconConstraints: BoxConstraints(),
+                    suffixIcon: IconButton(
+                      onPressed: () =>
+                          setState(() => showPassword = !showPassword),
+                      splashRadius: 20,
+                      icon: Icon(Icons.remove_red_eye,
+                          color: showPassword ? Colors.grey : primaryColor),
+                    ))),
           ],
         ),
       ),
@@ -139,6 +158,7 @@ class _ManageAccountState extends State<ManageAccount> {
   }
 
   _update() async {
+    FocusScope.of(context).unfocus();
     if (!error) {
       if (firstName.text.isNotEmpty &&
           lastName.text.isNotEmpty &&
@@ -152,7 +172,7 @@ class _ManageAccountState extends State<ManageAccount> {
             setLoading(true);
             FormData formData = FormData.fromMap({
               "id": userdata.id,
-              "username" : username.text,
+              "username": username.text,
               "first_name": firstName.text,
               "last_name": lastName.text,
               "email": email.text,

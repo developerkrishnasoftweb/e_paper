@@ -1,16 +1,17 @@
 import 'dart:convert';
 
+import 'package:Vishvasya_Vrutantah/ui/signin_signup/forgot_password.dart';
+import 'package:Vishvasya_Vrutantah/ui/widgets/button.dart';
+
+import '../../ui/widgets/input.dart';
+
 import '../../constant/colors.dart';
 import '../../constant/global.dart';
 import '../../services/services.dart';
-import '../../services/urls.dart';
-import '../../static/input.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 
 import '../../main.dart';
 import '../home.dart';
@@ -18,7 +19,9 @@ import 'signup.dart';
 
 class SignIn extends StatefulWidget {
   final String username;
+
   SignIn({this.username});
+
   @override
   _SignInState createState() => _SignInState();
 }
@@ -28,6 +31,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
   Animation animation;
   TextEditingController username, password;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   setLoading(bool status) {
     setState(() {
       showProgress = status;
@@ -60,7 +64,10 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
         alignment: Alignment.center,
         child: SingleChildScrollView(
           padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top, bottom: 20),
+              top: MediaQuery.of(context).padding.top,
+              bottom: 20,
+              left: 20,
+              right: 20),
           physics: BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -82,7 +89,6 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                   decoration: InputDecoration(
                       border: border(),
                       contentPadding: EdgeInsets.symmetric(horizontal: 15)),
-                  margin: EdgeInsets.symmetric(horizontal: 30),
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.emailAddress),
               input(
@@ -91,21 +97,32 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                   obscureText: true,
                   controller: password,
                   style: TextStyle(fontSize: 16),
-                  margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   decoration: InputDecoration(
                       border: border(),
                       contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                   textInputAction: TextInputAction.done,
                   onEditingComplete: _login),
-              Container(
-                margin: EdgeInsets.only(
-                    top: orientation == Orientation.portrait ? 25 : 15),
-                width: size.width - 60,
-                height: 60,
-                child: FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  child: GestureDetector(
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ForgotPassword())),
+                    child: Text("Forgot Password?",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold)),
                   ),
+                ),
+              ),
+              button(
+                  onPressed: !showProgress ? _login : null,
+                  text: showProgress ? null : "LOGIN TO YOUR ACCOUNT",
                   child: showProgress
                       ? SizedBox(
                           child: CircularProgressIndicator(
@@ -116,43 +133,8 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                           height: 25,
                           width: 25,
                         )
-                      : Text(
-                          "LOGIN TO YOUR ACCOUNT",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                  onPressed: !showProgress ? _login : null,
-                  color: primaryColor,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 20, bottom: 10),
-                width: size.width * 0.95,
-                child: RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                      text:
-                          "NOTE : This app is only for reading purpose. To purchase subscription please visit \t",
-                      style: TextStyle(color: primaryColor),
-                      children: [
-                        WidgetSpan(
-                            child: GestureDetector(
-                          child: Text(
-                            Urls.assetBaseUrl,
-                            style: TextStyle(
-                                color: primaryColor,
-                                decoration: TextDecoration.underline),
-                          ),
-                          onTap: () async {
-                            if(await canLaunch(Urls.assetBaseUrl)) {
-                              launch(Urls.assetBaseUrl);
-                            } else {
-                              showToastMessage("Unable to open URL");
-                            }
-                          },
-                        ))
-                      ]),
-                ),
-              ),
+                      : null),
+              SizedBox(height: 10),
               RichText(
                 text: TextSpan(children: [
                   TextSpan(

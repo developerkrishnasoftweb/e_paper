@@ -1,9 +1,12 @@
 import 'dart:ui';
 
+import 'package:Vishvasya_Vrutantah/ui/widgets/button.dart';
+
+import '../../ui/widgets/input.dart';
+
 import '../../constant/colors.dart';
 import '../../constant/global.dart';
 import '../../services/services.dart';
-import '../../static/input.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,10 +26,12 @@ class _SignUp extends State<SignUp> {
       email = "",
       refCode = "",
       password = "",
-      confirmPassword = "", username = "";
+      confirmPassword = "",
+      username = "";
   Color showPassword = Colors.black54;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextStyle inputTextStyle = TextStyle(fontSize: 16);
+
   setLoading(bool status) {
     setState(() {
       isLoading = status;
@@ -188,40 +193,28 @@ class _SignUp extends State<SignUp> {
                     alignment: PlaceholderAlignment.middle,
                   ),
                   TextSpan(
-                      text: "\tPassword must be at least 6 characters.",
+                      text: "\tPassword must be at least of 6 characters.",
                       style: TextStyle(
                         color: Colors.black54,
                       ))
                 ]),
               ),
             ),
-            Container(
-              height: 60,
-              width: size.width - 60,
-              margin: EdgeInsets.only(top: 10, bottom: 10),
-              child: FlatButton(
-                  color: primaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: isLoading
-                      ? SizedBox(
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                          ),
-                          height: 25,
-                          width: 25,
-                        )
-                      : Text(
-                          "Submit",
-                          style: TextStyle(
-                            fontSize: 17,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+            button(
+                onPressed: isLoading ? null : _signUp,
+                text: isLoading ? null : "REGISTER",
+                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: isLoading
+                    ? SizedBox(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(primaryColor),
                         ),
-                  onPressed: isLoading ? null : _signUp),
-            ),
+                        height: 25,
+                        width: 25,
+                      )
+                    : null),
             Container(
               width: size.width,
               padding: EdgeInsets.only(bottom: 20),
@@ -229,14 +222,14 @@ class _SignUp extends State<SignUp> {
               child: RichText(
                 text: TextSpan(children: [
                   TextSpan(
-                      text: "Already Registered",
+                      text: "Have an account",
                       style: TextStyle(
                         color: Colors.black54,
                       )),
                   WidgetSpan(
                     alignment: PlaceholderAlignment.middle,
                     child: InkWell(
-                      child: Text("\tSignIn",
+                      child: Text("\tSignIn?",
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 17,
@@ -258,7 +251,9 @@ class _SignUp extends State<SignUp> {
   }
 
   void _signUp() async {
-    if (username.isNotEmpty && firstName.isNotEmpty &&
+    FocusScope.of(context).unfocus();
+    if (username.isNotEmpty &&
+        firstName.isNotEmpty &&
         lastName.isNotEmpty &&
         mobileNo.isNotEmpty &&
         password.isNotEmpty &&

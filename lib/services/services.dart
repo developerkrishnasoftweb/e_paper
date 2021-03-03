@@ -40,6 +40,30 @@ class Services {
     }
   }
 
+  static Future<Data> forgotPassword(String email) async {
+    String url = Urls.baseUrl + Urls.forgotPassword;
+    try {
+      dio.Response response = await dio.Dio()
+          .post(url, data: dio.FormData.fromMap({'email': email}));
+      print(response);
+      if (response.statusCode == 200)
+        return Data(
+            data: [response.data["data"]],
+            message: response.data["message"],
+            response: response.data["status"]);
+      return null;
+    } on dio.DioError catch (e) {
+      if (dio.DioErrorType.DEFAULT == e.type &&
+          e.error.runtimeType == SocketException) {
+        return internetError;
+      } else {
+        return dataError;
+      }
+    } catch (e) {
+      return dataError;
+    }
+  }
+
   static Future<Data> getUserData() async {
     String url = Urls.baseUrl + Urls.getUser;
     try {
@@ -223,7 +247,6 @@ class Services {
       }
       return null;
     } on dio.DioError catch (e) {
-      print(e);
       if (dio.DioErrorType.DEFAULT == e.type &&
           e.error.runtimeType == SocketException) {
         return internetError;
@@ -231,7 +254,6 @@ class Services {
         return dataError;
       }
     } catch (e) {
-      print(e);
       return dataError;
     }
   }
@@ -322,9 +344,8 @@ class Services {
   static Future<String> loadPDF({@required String pdfFile}) async {
     var dir = await getTemporaryDirectory();
     var path = dir.path + pdfFile.split("/").last;
-    if(await File(path).exists())
-      return path;
-      dio.Response response = await dio.Dio().get(Urls.assetBaseUrl + pdfFile,
+    if (await File(path).exists()) return path;
+    dio.Response response = await dio.Dio().get(Urls.assetBaseUrl + pdfFile,
         options: Options(
             responseType: ResponseType.bytes,
             followRedirects: false,

@@ -24,6 +24,15 @@ Future<bool> showToastMessage(String msg,
       textColor: textColor);
 }
 
+String removeHtmlTags({String data : "N/A"}) {
+  RegExp regExp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
+  return data
+      .replaceAll(regExp, "")
+      .replaceAll("&nbsp;", " ")
+      .replaceAll("&amp;", "&")
+      .replaceAll("&quot;", "\"") ?? "N/A";
+}
+
 void customToast(
     {String text,
     Icon icon,

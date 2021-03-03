@@ -71,10 +71,16 @@ class _EPaperPlansState extends State<EPaperPlans> {
       "reader_id": userdata.id,
       "plan_id": selectedPlan.id,
     });
-    Services.subscribe(formData).then((value) async {
+    await Services.subscribe(formData).then((value) async {
       if (value.response) {
         await Services.getUserData();
-        setState(() {});
+        await Services.checkPlanValidity().then((value) {
+          if(value.response) {
+            setState(() {
+              subscriptionPlanId = value.data[0]["subscription_plan_id"];
+            });
+          }
+        });
         setLoading(false);
         showToastMessage(value.message);
       } else {
@@ -144,8 +150,15 @@ class _EPaperPlansState extends State<EPaperPlans> {
   _buy(SubscriptionPlan plan) async {
     setLoading(true);
     if (int.parse(plan.priceINR) == 0) {
-      await Services.trialPlan(planId: plan.id).then((value) {
+      await Services.trialPlan(planId: plan.id).then((value) async {
         if (value.response) {
+          await Services.checkPlanValidity().then((value) {
+            if(value.response) {
+              setState(() {
+                subscriptionPlanId = value.data[0]["subscription_plan_id"];
+              });
+            }
+          });
           setLoading(false);
           showToastMessage(value.message);
         } else {
@@ -245,6 +258,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
           Padding(
             padding: EdgeInsets.symmetric(vertical: 5),
             child: RichText(
+              textAlign: TextAlign.center,
               text: TextSpan(children: [
                 WidgetSpan(
                     alignment: PlaceholderAlignment.middle,
@@ -266,8 +280,9 @@ class _EPaperPlansState extends State<EPaperPlans> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 5),
+            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
             child: RichText(
+              textAlign: TextAlign.center,
               text: TextSpan(children: [
                 WidgetSpan(
                     alignment: PlaceholderAlignment.middle,
@@ -279,11 +294,11 @@ class _EPaperPlansState extends State<EPaperPlans> {
                           shape: BoxShape.circle, color: Colors.black45),
                     )),
                 TextSpan(
-                  text: "${plan.features}",
+                  text: removeHtmlTags(data: plan.features),
                   style: TextStyle(
                     color: Colors.black45,
                     fontSize: 20.0,
-                  ),
+                  )
                 )
               ]),
             ),

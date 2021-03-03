@@ -7,7 +7,7 @@ import '../models/feed_model.dart';
 import '../constant/colors.dart';
 import '../constant/global.dart';
 import '../services/urls.dart';
-import '../static/drawer.dart';
+import 'widgets/drawer.dart';
 import 'e_paper_plans.dart';
 import 'preview.dart';
 import 'signin_signup/signin.dart';
@@ -26,6 +26,7 @@ class _HomeState extends State<Home> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<FeedData> feedData = [];
   DateTime currentBackPressTime;
+
   @override
   void initState() {
     super.initState();
@@ -35,6 +36,12 @@ class _HomeState extends State<Home> {
   getFeed() async {
     await Services.getFeed().then((value) {
       if (value.response) {
+        if(value.data[0].length == 0) {
+          setState(() {
+            feedData = null;
+          });
+          return;
+        }
         for (int i = 0; i < value.data[0].length; i++) {
           setState(() {
             feedData.add(FeedData.fromJson(value.data[0][i]));
@@ -100,7 +107,7 @@ class _HomeState extends State<Home> {
               ],
               backgroundColor: primaryColor,
             ),
-            body: feedData.length > 0
+            body: feedData != null ? feedData.length > 0
                 ? GridView.builder(
                     physics: BouncingScrollPhysics(),
                     padding: EdgeInsets.all(5),
@@ -121,10 +128,16 @@ class _HomeState extends State<Home> {
                     scrollDirection: Axis.vertical,
                   )
                 : Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation(primaryColor),
-                    ),
-                  )),
+                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(primaryColor),),
+                  ) : Center(
+              child: Text(
+                "News paper not found :(",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
+              ),
+            )),
         onWillPop: _exit);
   }
 
@@ -227,7 +240,7 @@ Widget buildCards(
                 ),
                 alignment: PlaceholderAlignment.middle),
             TextSpan(
-                text: "\t" + feedData.createdAt.split(" ").first,
+                text: "\t" + feedData.publishedAt.split(" ").first,
                 style: TextStyle(
                     color: primarySwatch[500],
                     fontSize: 17,
@@ -237,7 +250,7 @@ Widget buildCards(
         SizedBox(
           height: 2,
         ),
-        Text("Vishvasya Vrutantam",
+        Text("Vishvasya Vrutantah",
             style: TextStyle(
                 color: primarySwatch[500],
                 fontWeight: FontWeight.bold,
