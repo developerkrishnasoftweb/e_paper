@@ -231,13 +231,11 @@ class _SignUp extends State<SignUp> {
                     child: InkWell(
                       child: Text("\tSignIn?",
                           style: TextStyle(
-                              color: Colors.black,
+                              color: primaryColor,
                               fontSize: 17,
                               fontWeight: FontWeight.bold)),
                       onTap: () {
                         Navigator.pop(context);
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => SignIn()));
                       },
                     ),
                   )

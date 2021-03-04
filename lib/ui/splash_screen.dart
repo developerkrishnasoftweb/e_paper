@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 class Splash extends StatefulWidget {
   final Widget widget;
+
   Splash({this.widget});
+
   @override
   _SplashState createState() => _SplashState();
 }
@@ -12,9 +14,9 @@ class _SplashState extends State<Splash> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 2000), () {
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => widget.widget), (route) => false);
+    Future.delayed(Duration(milliseconds: 1000), () {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => widget.widget));
     });
   }
 

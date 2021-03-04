@@ -65,11 +65,15 @@ class _ManageAccountState extends State<ManageAccount> {
   }
 
   getSubscription() async {
+    setLoading(true);
     await Services.checkPlanValidity().then((value) {
       if (value.response) {
         setState(() {
           subscriptionInfo = SubscriptionInfo.fromJson(value.data[0]);
         });
+        setLoading(false);
+      } else {
+        setLoading(false);
       }
     });
   }

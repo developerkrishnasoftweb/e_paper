@@ -17,7 +17,8 @@ Future<void> main() async {
   sharedPreferences = await SharedPreferences.getInstance();
   bool status = await getCredential();
   await Services.config().then((value) async {
-    config = Config.fromJson(await jsonDecode(sharedPreferences.getString(Params.config)));
+    config = Config.fromJson(
+        await jsonDecode(sharedPreferences.getString(Params.config)));
   });
   if (status) {
     await setUserdata();
@@ -31,7 +32,7 @@ Future<void> main() async {
           visualDensity: VisualDensity.adaptivePlatformDensity,
           fontFamily: "Poppins"),
       debugShowCheckedModeBanner: false,
-      home: status ? Splash(widget: Home()) : Splash(widget: SignIn())));
+      home: Splash(widget: status ? Home() : SignIn())));
 
   await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
 }
