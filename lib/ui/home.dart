@@ -167,9 +167,7 @@ Widget buildCards(
               builder: (context) => Preview(pdfFilePath: feedData.pdfFile)));
     } else {
       showDialog(
-          context: context,
-          barrierDismissible: true,
-          child: AlertDialog(
+          builder: (context) => AlertDialog(
             title: Text(
               "Vishvasya Vrutantam",
               style:
@@ -191,7 +189,8 @@ Widget buildCards(
                   },
                   child: Text("Become Prime Member")),
             ],
-          ));
+          ), context: context,
+          barrierDismissible: true);
     }
   }
 
