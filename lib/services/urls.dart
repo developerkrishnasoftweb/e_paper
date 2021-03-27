@@ -10,6 +10,7 @@ class Urls {
   static String checkPlanValidity = "check_plan_validity";
   static String subscribe = "process_payment";
   static String generateOrderId = "gen_order";
+  static String logout = "logout";
   static String getSubscription = "subscription_plan";
   static String config = "configuration";
   static String isAvailable = "profile/is-available";

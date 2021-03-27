@@ -1,3 +1,4 @@
+import 'package:Vishvasya_Vrutantah/models/user_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../services/services.dart';
@@ -56,17 +57,25 @@ class _HomeState extends State<Home> {
 
   _logout() async {
     loader(context: context, text: "Logging out ...");
-    String email = userdata.email;
-    userdata = null;
-    sharedPreferences.clear().then((value) {
-      if (value) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-                builder: (context) => SignIn(
+    await Services.logout(userdata.id).then((value) {
+      if(value.response) {
+        String email = userdata.email;
+        userdata = null;
+        sharedPreferences.clear().then((value) {
+          if (value) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SignIn(
                       username: email,
                     )),
-            (route) => false);
+                    (route) => false);
+          }
+        });
+        showToastMessage(value.message);
+      } else {
+        Navigator.pop(context);
+        showToastMessage(value.message);
       }
     });
   }

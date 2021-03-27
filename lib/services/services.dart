@@ -304,6 +304,30 @@ class Services {
     }
   }
 
+  static Future<Data> logout(String userId) async {
+    String url = Urls.baseUrl + Urls.logout;
+    try {
+      dio.Response response =
+          await dio.Dio().post(url, data: dio.FormData.fromMap({"id": userId}));
+      if (response.statusCode == 200) {
+        return Data(
+            response: response.data["status"],
+            message: response.data["message"],
+            data: [response.data["data"]]);
+      }
+      return null;
+    } on dio.DioError catch (e) {
+      if (dio.DioErrorType.DEFAULT == e.type &&
+          e.error.runtimeType == SocketException) {
+        return internetError;
+      } else {
+        return dataError;
+      }
+    } catch (e) {
+      return dataError;
+    }
+  }
+
   static Future<void> config() async {
     String url = Urls.baseUrl + Urls.config;
     try {

@@ -41,8 +41,9 @@ class _EPaperPlansState extends State<EPaperPlans> {
   }
 
   getSubscriptionPlans() async {
+    plans.clear();
     await Services.checkPlanValidity().then((value) {
-      if(value.response) {
+      if (value.response) {
         setState(() {
           subscriptionPlanId = value.data[0]["subscription_plan_id"];
         });
@@ -75,7 +76,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
       if (value.response) {
         await Services.getUserData();
         await Services.checkPlanValidity().then((value) {
-          if(value.response) {
+          if (value.response) {
             setState(() {
               subscriptionPlanId = value.data[0]["subscription_plan_id"];
             });
@@ -105,6 +106,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
     super.dispose();
     _razorpay.clear();
   }
+
   @override
   Widget build(BuildContext context) {
     Orientation orientation = MediaQuery.of(context).orientation;
@@ -127,22 +129,22 @@ class _EPaperPlansState extends State<EPaperPlans> {
       ),
       body: plans.length > 0
           ? GridView.builder(
-        padding: EdgeInsets.all(5),
-        physics: BouncingScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: orientation == Orientation.portrait ? 1 : 2,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            childAspectRatio:
-            300 / (orientation == Orientation.portrait ? 360 : 320)),
-        itemBuilder: (BuildContext context, int index) {
-          return buildSubscriptionCard(plans[index]);
-        },
-        itemCount: plans.length,
-        controller: ScrollController(keepScrollOffset: true),
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-      )
+              padding: EdgeInsets.all(5),
+              physics: BouncingScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: orientation == Orientation.portrait ? 1 : 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio:
+                      300 / (orientation == Orientation.portrait ? 360 : 320)),
+              itemBuilder: (BuildContext context, int index) {
+                return buildSubscriptionCard(plans[index]);
+              },
+              itemCount: plans.length,
+              controller: ScrollController(keepScrollOffset: true),
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+            )
           : Center(child: CircularProgressIndicator()),
     );
   }
@@ -153,7 +155,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
       await Services.trialPlan(planId: plan.id).then((value) async {
         if (value.response) {
           await Services.checkPlanValidity().then((value) {
-            if(value.response) {
+            if (value.response) {
               setState(() {
                 subscriptionPlanId = value.data[0]["subscription_plan_id"];
               });
@@ -204,6 +206,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
         }
       });
     }
+    getSubscriptionPlans();
   }
 
   Widget buildSubscriptionCard(SubscriptionPlans plan) {
@@ -294,12 +297,11 @@ class _EPaperPlansState extends State<EPaperPlans> {
                           shape: BoxShape.circle, color: Colors.black45),
                     )),
                 TextSpan(
-                  text: removeHtmlTags(data: plan.features),
-                  style: TextStyle(
-                    color: Colors.black45,
-                    fontSize: 20.0,
-                  )
-                )
+                    text: removeHtmlTags(data: plan.features),
+                    style: TextStyle(
+                      color: Colors.black45,
+                      fontSize: 20.0,
+                    ))
               ]),
             ),
           ),
@@ -320,12 +322,10 @@ class _EPaperPlansState extends State<EPaperPlans> {
                         borderRadius: BorderRadius.circular(5),
                         side: BorderSide(color: primaryColor)),
                     onPressed: subscriptionPlanId == plan.id
-                        ? (){}
+                        ? () {}
                         : () => _buy(plan),
                     child: Text(
-                      subscriptionPlanId == plan.id
-                          ? "Activated"
-                          : "Buy Now",
+                      subscriptionPlanId == plan.id ? "Activated" : "Buy Now",
                       style: TextStyle(
                           color: subscriptionPlanId == plan.id
                               ? Colors.white
@@ -334,9 +334,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
                     ),
                     splashColor: primarySwatch[100],
                     highlightColor: primarySwatch[100],
-                    color: subscriptionPlanId == plan.id
-                        ? primaryColor
-                        : null,
+                    color: subscriptionPlanId == plan.id ? primaryColor : null,
                   ),
             height: 60,
             width: size.width * 0.7,
@@ -349,6 +347,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
 
 class SubscriptionPlans {
   final String id, title, priceINR, priceUSD, features, planValidity, planType;
+
   SubscriptionPlans(
       {this.title,
       this.id,
