@@ -1,4 +1,3 @@
-import 'package:Vishvasya_Vrutantah/models/user_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../services/services.dart';
