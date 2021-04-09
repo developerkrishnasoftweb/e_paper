@@ -92,7 +92,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               height: 10,
             ),
             input(
-                context: context,
                 style: TextStyle(fontSize: 16),
                 onChanged: (value) {
                   setState(() {
@@ -100,9 +99,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   });
                 },
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                    border: border(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                 text: "Email"),
             button(
                 onPressed: !isLoading ? _forgotPassword : null,

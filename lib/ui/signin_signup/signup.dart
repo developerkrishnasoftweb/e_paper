@@ -82,43 +82,30 @@ class _SignUp extends State<SignUp> {
               height: 10,
             ),
             input(
-                context: context,
                 style: inputTextStyle,
                 onChanged: (value) {
                   setState(() {
                     username = value;
                   });
                 },
-                decoration: InputDecoration(
-                    border: border(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                 text: "Username"),
             input(
-                context: context,
                 style: inputTextStyle,
                 onChanged: (value) {
                   setState(() {
                     firstName = value;
                   });
                 },
-                decoration: InputDecoration(
-                    border: border(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                 text: "First name"),
             input(
-                context: context,
                 style: inputTextStyle,
                 onChanged: (value) {
                   setState(() {
                     lastName = value;
                   });
                 },
-                decoration: InputDecoration(
-                    border: border(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                 text: "Last name"),
             input(
-                context: context,
                 style: inputTextStyle,
                 onChanged: (value) {
                   setState(() {
@@ -126,12 +113,8 @@ class _SignUp extends State<SignUp> {
                   });
                 },
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                    border: border(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                 text: "Email"),
             input(
-                context: context,
                 style: inputTextStyle,
                 onChanged: (value) {
                   setState(() {
@@ -139,24 +122,16 @@ class _SignUp extends State<SignUp> {
                   });
                 },
                 keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                    border: border(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                 text: "Mobile No"),
             input(
-                context: context,
                 style: inputTextStyle,
                 onChanged: (value) {
                   setState(() {
                     refCode = value;
                   });
                 },
-                decoration: InputDecoration(
-                    border: border(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                 text: "Refer Code (Optional)"),
             input(
-                context: context,
                 style: inputTextStyle,
                 onChanged: (value) {
                   setState(() {
@@ -164,12 +139,8 @@ class _SignUp extends State<SignUp> {
                   });
                 },
                 obscureText: true,
-                decoration: InputDecoration(
-                    border: border(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                 text: "Password"),
             input(
-                context: context,
                 style: inputTextStyle,
                 onChanged: (value) {
                   setState(() {
@@ -177,9 +148,6 @@ class _SignUp extends State<SignUp> {
                   });
                 },
                 obscureText: true,
-                decoration: InputDecoration(
-                    border: border(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                 text: "Confirm Password"),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 10),

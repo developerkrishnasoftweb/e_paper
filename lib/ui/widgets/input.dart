@@ -1,11 +1,9 @@
-
 import '../../constant/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 Widget input(
-    {@required BuildContext context,
-    InputDecoration decoration,
+    {InputDecoration decoration,
     TextStyle style,
     GestureTapCallback onTap,
     TextEditingController controller,
@@ -23,10 +21,9 @@ Widget input(
     FocusNode focusNode,
     double height,
     int maxLines}) {
-  Size size = MediaQuery.of(context).size;
   return Container(
     margin: margin ?? const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-    width: width ?? size.width,
+    width: width ?? double.infinity,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -34,7 +31,7 @@ Widget input(
             ? Text(
                 text ?? " ",
                 style: labelStyle ??
-                    Theme.of(context).textTheme.bodyText1.copyWith(
+                    TextStyle(
                         color: Colors.grey,
                         fontSize: 13,
                         fontWeight: FontWeight.bold),
@@ -48,7 +45,10 @@ Widget input(
           child: TextFormField(
             autofocus: autoFocus ?? false,
             maxLines: maxLines ?? 1,
-            decoration: decoration ?? null,
+            decoration: decoration ??
+                InputDecoration(
+                    border: border(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10)),
             style: style ?? null,
             onTap: onTap ?? null,
             controller: controller ?? null,

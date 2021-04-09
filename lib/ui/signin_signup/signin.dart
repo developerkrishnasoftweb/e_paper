@@ -82,24 +82,16 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                 height: 20,
               ),
               input(
-                  context: context,
                   text: "Username",
                   controller: username,
                   style: TextStyle(fontSize: 16),
-                  decoration: InputDecoration(
-                      border: border(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.emailAddress),
               input(
-                  context: context,
                   text: "Password",
                   obscureText: true,
                   controller: password,
                   style: TextStyle(fontSize: 16),
-                  decoration: InputDecoration(
-                      border: border(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                   textInputAction: TextInputAction.done,
                   onEditingComplete: _login),
               Align(

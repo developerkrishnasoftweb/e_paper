@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../constant/colors.dart';
+import 'widgets/input.dart';
 
 class EPaperPlans extends StatefulWidget {
   @override
@@ -22,7 +23,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
   SubscriptionPlans selectedPlan;
   Razorpay _razorpay;
   bool isLoading = false;
-  String subscriptionPlanId;
+  String subscriptionPlanId = "", referralCode = "";
 
   setLoading(bool status) {
     setState(() {
@@ -128,28 +129,40 @@ class _EPaperPlansState extends State<EPaperPlans> {
         backgroundColor: primaryColor,
       ),
       body: plans.length > 0
-          ? GridView.builder(
-              padding: EdgeInsets.all(5),
-              physics: BouncingScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: orientation == Orientation.portrait ? 1 : 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio:
-                      300 / (orientation == Orientation.portrait ? 360 : 320)),
-              itemBuilder: (BuildContext context, int index) {
-                return buildSubscriptionCard(plans[index]);
-              },
-              itemCount: plans.length,
-              controller: ScrollController(keepScrollOffset: true),
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
+          ? Column(
+              children: [
+                input(
+                    text: "Referral Code",
+                    margin: EdgeInsets.all(5),
+                    onChanged: (v) => setState(() => referralCode = v)),
+                Expanded(
+                  child: GridView.builder(
+                    padding: EdgeInsets.all(5),
+                    physics: BouncingScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount:
+                            orientation == Orientation.portrait ? 1 : 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        childAspectRatio: 300 /
+                            (orientation == Orientation.portrait ? 360 : 320)),
+                    itemBuilder: (BuildContext context, int index) {
+                      return buildSubscriptionCard(plans[index]);
+                    },
+                    itemCount: plans.length,
+                    controller: ScrollController(keepScrollOffset: true),
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                  ),
+                ),
+              ],
             )
           : Center(child: CircularProgressIndicator()),
     );
   }
 
   _buy(SubscriptionPlans plan) async {
+    FocusScope.of(context).unfocus();
     setLoading(true);
     if (int.parse(plan.priceINR) == 0) {
       await Services.trialPlan(planId: plan.id).then((value) async {
@@ -173,7 +186,8 @@ class _EPaperPlansState extends State<EPaperPlans> {
         "reader_id": userdata.id,
         "plan_id": plan.id,
         "amount": (double.parse(plan.priceINR) * 100).round(),
-        "currency": "INR"
+        "currency": "INR",
+        "referral_code": referralCode
       });
       await Services.generateOrderId(formData).then((value) {
         if (value.response) {

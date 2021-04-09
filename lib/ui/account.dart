@@ -111,7 +111,6 @@ class _ManageAccountState extends State<ManageAccount> {
           children: [
             profileImage(),
             input(
-                context: context,
                 width: size.width * 0.9,
                 text: "User name",
                 controller: username,
@@ -119,41 +118,24 @@ class _ManageAccountState extends State<ManageAccount> {
                     border: border(),
                     contentPadding: EdgeInsets.symmetric(horizontal: 15))),
             input(
-                context: context,
                 width: size.width * 0.9,
                 text: "First name",
-                controller: firstName,
-                decoration: InputDecoration(
-                    border: border(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 15))),
+                controller: firstName),
             input(
-                context: context,
                 width: size.width * 0.9,
                 text: "Last name",
-                controller: lastName,
-                decoration: InputDecoration(
-                    border: border(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 15))),
+                controller: lastName),
             input(
-                context: context,
                 width: size.width * 0.9,
                 text: "Email",
                 controller: email,
-                onChanged: _isEmailAvailable,
-                decoration: InputDecoration(
-                    border: border(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 15))),
+                onChanged: _isEmailAvailable),
             input(
-                context: context,
                 width: size.width * 0.9,
                 text: "Mobile",
                 controller: mobile,
-                onChanged: _isMobileAvailable,
-                decoration: InputDecoration(
-                    border: border(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 15))),
+                onChanged: _isMobileAvailable),
             input(
-                context: context,
                 width: size.width * 0.9,
                 text: "Password",
                 controller: TextEditingController(text: userdata.password),
