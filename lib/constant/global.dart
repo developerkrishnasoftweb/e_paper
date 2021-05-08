@@ -107,16 +107,5 @@ Future<void> loader(
 }
 
 class Params {
-  static String id = "id",
-      username = "username",
-      firstName = "first_name",
-      lastName = "last_name",
-      email = "email",
-      mobile = "mobile",
-      password = "password",
-      profileImage = "profile_image",
-      refCode = "referral_code",
-      subscriptionId = "subscription_id",
-      userData = "userdata",
-      config = "config";
+  static String userData = "userdata", config = "config";
 }

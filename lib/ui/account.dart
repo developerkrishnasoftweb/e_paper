@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:Vishvasya_Vrutantah/models/subscription_info_model.dart';
 import 'package:Vishvasya_Vrutantah/ui/e_paper_plans.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import 'widgets/input.dart';
@@ -139,7 +140,6 @@ class _ManageAccountState extends State<ManageAccount> {
                 width: size.width * 0.9,
                 text: "Password",
                 controller: TextEditingController(text: userdata.password),
-                onChanged: _isMobileAvailable,
                 readOnly: true,
                 obscureText: showPassword,
                 decoration: InputDecoration(
@@ -152,6 +152,25 @@ class _ManageAccountState extends State<ManageAccount> {
                       splashRadius: 20,
                       icon: Icon(Icons.remove_red_eye,
                           color: showPassword ? Colors.grey : primaryColor),
+                    ))),
+            input(
+                width: size.width * 0.9,
+                text: "Referral Code",
+                controller:
+                    TextEditingController(text: userdata.referralCode ?? 'N/A'),
+                readOnly: true,
+                decoration: InputDecoration(
+                    border: border(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                    suffixIconConstraints: BoxConstraints(),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        Clipboard.setData(
+                            ClipboardData(text: userdata.referralCode ?? ''));
+                        showToastMessage('Copied');
+                      },
+                      splashRadius: 20,
+                      icon: Icon(Icons.copy, color: Colors.grey, size: 22),
                     ))),
             Padding(
               padding: const EdgeInsets.all(10),

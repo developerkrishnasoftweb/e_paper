@@ -41,7 +41,7 @@ Future<void> setUserdata() async {
   List data =
       await jsonDecode(sharedPreferences.getString(Params.userData) ?? "[{}]");
   if (data != null) {
-    userdata = Userdata.fromJSON(data[0]);
+    userdata = Userdata.fromJson(data[0]);
   }
   return;
 }
