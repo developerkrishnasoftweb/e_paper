@@ -30,34 +30,31 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    getFeed();
+    _getFeed();
   }
 
-  getFeed() async {
-    await Services.getFeed().then((value) {
-      if (value.response) {
-        if(value.data[0].length == 0) {
-          setState(() {
-            feedData = null;
-          });
-          return;
-        }
-        for (int i = 0; i < value.data[0].length; i++) {
-          setState(() {
-            feedData.add(FeedData.fromJson(value.data[0][i]));
-          });
-        }
-      } else {
-        Fluttertoast.showToast(
-            msg: value.message.toString(), gravity: ToastGravity.BOTTOM);
+  Future<void> _getFeed() async {
+    var response = await Services.getFeed();
+    if (response.response) {
+      if (response.data[0].length == 0) {
+        feedData = null;
+        return;
       }
-    });
+      feedData.clear();
+      for (int i = 0; i < response.data[0].length; i++) {
+        feedData.add(FeedData.fromJson(response.data[0][i]));
+      }
+    } else {
+      Fluttertoast.showToast(
+          msg: response.message.toString(), gravity: ToastGravity.BOTTOM);
+    }
+    setState(() {});
   }
 
   _logout() async {
     loader(context: context, text: "Logging out ...");
     await Services.logout(userdata.id).then((value) {
-      if(value.response) {
+      if (value.response) {
         String email = userdata.email;
         userdata = null;
         sharedPreferences.clear().then((value) {
@@ -66,9 +63,9 @@ class _HomeState extends State<Home> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => SignIn(
-                      username: email,
-                    )),
-                    (route) => false);
+                          username: email,
+                        )),
+                (route) => false);
           }
         });
         showToastMessage(value.message);
@@ -81,8 +78,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    Orientation orientation = MediaQuery.of(context).orientation;
     return WillPopScope(
         child: Scaffold(
             key: _scaffoldKey,
@@ -103,7 +98,7 @@ class _HomeState extends State<Home> {
                     padding: const EdgeInsets.only(right: 10.0),
                     child: GestureDetector(
                         child: Text(
-                          "LOG OUT",
+                          "Logout",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 13,
@@ -115,38 +110,53 @@ class _HomeState extends State<Home> {
               ],
               backgroundColor: primaryColor,
             ),
-            body: feedData != null ? feedData.length > 0
-                ? GridView.builder(
-                    physics: BouncingScrollPhysics(),
-                    padding: EdgeInsets.all(5),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount:
-                            orientation == Orientation.portrait ? 1 : 2,
-                        crossAxisSpacing: 5,
-                        mainAxisSpacing: 5,
-                        childAspectRatio: size.width /
-                            (orientation == Orientation.portrait ? 400 : 500)),
-                    itemBuilder: (BuildContext context, int index) {
-                      return buildCards(
-                          context: context, feedData: feedData[index]);
-                    },
-                    itemCount: feedData.length,
-                    controller: ScrollController(keepScrollOffset: true),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                  )
-                : Center(
-                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(primaryColor),),
-                  ) : Center(
-              child: Text(
-                "News paper not found :(",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold),
-              ),
-            )),
+            body: _body()),
         onWillPop: _exit);
+  }
+
+  Widget _body() {
+    Size size = MediaQuery.of(context).size;
+    Orientation orientation = MediaQuery.of(context).orientation;
+    Widget body;
+    if (feedData != null) {
+      if (feedData.length > 0) {
+        body = RefreshIndicator(
+          onRefresh: _getFeed,
+          child: GridView.builder(
+            physics: BouncingScrollPhysics(),
+            padding: EdgeInsets.all(5),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: orientation == Orientation.portrait ? 1 : 2,
+                crossAxisSpacing: 5,
+                mainAxisSpacing: 5,
+                childAspectRatio: size.width /
+                    (orientation == Orientation.portrait ? 400 : 500)),
+            itemBuilder: (BuildContext context, int index) {
+              return buildCards(context: context, feedData: feedData[index]);
+            },
+            itemCount: feedData.length,
+            controller: ScrollController(keepScrollOffset: true),
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+          ),
+        );
+      } else {
+        body = Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation(primaryColor),
+          ),
+        );
+      }
+    } else {
+      body = Center(
+        child: Text(
+          "News paper not found :(",
+          style: TextStyle(
+              color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+      );
+    }
+    return body;
   }
 
   Future<bool> _exit() async {
@@ -176,28 +186,32 @@ Widget buildCards(
     } else {
       showDialog(
           builder: (context) => AlertDialog(
-            title: Text(
-              "Vishvasya Vrutantam",
-              style:
-                  TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
-            ),
-            content: Text("You have to become prime member to read newspaper"),
-            actions: [
-              FlatButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                    "Close",
-                    style: TextStyle(color: Colors.black),
-                  )),
-              FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => EPaperPlans()));
-                  },
-                  child: Text("Become Prime Member")),
-            ],
-          ), context: context,
+                title: Text(
+                  "Vishvasya Vrutantam",
+                  style: TextStyle(
+                      color: primaryColor, fontWeight: FontWeight.bold),
+                ),
+                content:
+                    Text("You have to become prime member to read newspaper"),
+                actions: [
+                  FlatButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(
+                        "Close",
+                        style: TextStyle(color: Colors.black),
+                      )),
+                  FlatButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EPaperPlans()));
+                      },
+                      child: Text("Become Prime Member")),
+                ],
+              ),
+          context: context,
           barrierDismissible: true);
     }
   }
@@ -215,7 +229,7 @@ Widget buildCards(
         Expanded(
           child: Image(
             width: orientation == Orientation.portrait
-                ? size.width * 0.8
+                ? size.width * 0.7
                 : size.width * 0.3,
             image: feedData.previewImage != null
                 ? NetworkImage(Urls.assetBaseUrl + feedData.previewImage)

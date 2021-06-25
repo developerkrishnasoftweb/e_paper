@@ -123,14 +123,14 @@ class _SignUp extends State<SignUp> {
                 },
                 keyboardType: TextInputType.phone,
                 text: "Mobile No"),
-            input(
+            /* input(
                 style: inputTextStyle,
                 onChanged: (value) {
                   setState(() {
                     refCode = value;
                   });
                 },
-                text: "Refer Code (Optional)"),
+                text: "Referral Code (Optional)"), */
             input(
                 style: inputTextStyle,
                 onChanged: (value) {
