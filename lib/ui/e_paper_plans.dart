@@ -134,7 +134,7 @@ class _EPaperPlansState extends State<EPaperPlans> {
                 input(
                     text: "Referral Code",
                     margin: EdgeInsets.all(5),
-                    onChanged: (v) => setState(() => referralCode = v)),
+                    onChanged: (v) => referralCode = v),
                 Expanded(
                   child: GridView.builder(
                     padding: EdgeInsets.all(5),

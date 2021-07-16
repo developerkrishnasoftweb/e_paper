@@ -262,6 +262,7 @@ class Services {
     String url = Urls.baseUrl + Urls.subscribe;
     try {
       dio.Response response = await dio.Dio().post(url, data: body);
+      print(response.data);
       if (response.statusCode == 200) {
         return Data(
             response: response.data["status"],
